@@ -17,8 +17,8 @@ What it shows, and why each part is worth showing:
     destroys the generator fingerprint.
 
 Usage:
-    python tools/demo.py                     # 8 random test images, full test-set score on GPU
-    python tools/demo.py -n 12 --seed 7      # a different sample
+    python tools/demo.py                     # 4 random test images, full test-set score on GPU
+    python tools/demo.py -n 6 --seed 7       # a different, larger sample
     python tools/demo.py --jpeg 30           # degrade the sample to JPEG quality 30 first
     python tools/demo.py --no-full           # skip the whole-test-set pass
     python tools/demo.py --no-show           # write the figure, do not open a window
@@ -184,39 +184,199 @@ def print_table(y_true: np.ndarray, probs: np.ndarray, gates: np.ndarray, idx: n
         )
 
 
-def make_figure(ns: dict, images_uint8: np.ndarray, y_true, probs, gates, out_path: Path, show: bool):
-    """Grid of the sampled images, captioned with what the model just said about each."""
+REAL_COLOUR = "#1565c0"
+FAKE_COLOUR = "#c62828"
+OK_COLOUR = "#2e7d32"
+
+
+def stream_views(ns: dict, model, images_uint8: np.ndarray, device):
+    """The two things the network actually looks at, for one batch of images.
+
+    Returns (residual, spectrum, radial), all as numpy:
+      residual  [N,32,32]  output of the Bayar-Stamm constrained convolution, channel-averaged.
+                           This is the spatial stream's input after content suppression.
+      spectrum  [N,32,32]  centred log-magnitude spectrum, channel-averaged: the frequency
+                           stream's input.
+      radial    [N,16]     azimuthal average of that spectrum, the hand-designed prior.
+
+    Computed with the model's own methods rather than reimplemented, so the figure cannot
+    drift away from what the network is really fed.
+    """
+    torch = ns["torch"]
+    with torch.no_grad():
+        x = normalise(ns, images_uint8).to(device)
+        residual = (
+            model.spatial.front(x).mean(dim=1).cpu().numpy()
+            if model.spatial is not None
+            else np.zeros((len(images_uint8), 32, 32), dtype=np.float32)
+        )
+        spec = model.frequency.spectrum(x)
+        radial = model.frequency._radial(spec).cpu().numpy()
+        spectrum = spec.mean(dim=1).cpu().numpy()
+    return residual, spectrum, radial
+
+
+def reference_profiles(ns: dict, model, X_test, y_test, device, n_per_class: int = 2000):
+    """Mean radial profile of clean REAL and clean FAKE images, as the comparison baseline.
+
+    This is the population-level version of the figure that motivated the whole architecture
+    (results/figures/03_radial_profile.png). Drawing each test image against it is what makes
+    the decision legible: you can see which curve the image sits closer to.
+    """
+    real = X_test[y_test == 0][:n_per_class]
+    fake = X_test[y_test == 1][:n_per_class]
+    _, _, radial_real = stream_views(ns, model, real, device)
+    _, _, radial_fake = stream_views(ns, model, fake, device)
+    return radial_real.mean(axis=0), radial_fake.mean(axis=0)
+
+
+def make_figure(
+    ns: dict,
+    model,
+    device,
+    images_uint8: np.ndarray,
+    y_true,
+    probs,
+    gates,
+    ref_real,
+    ref_fake,
+    out_path: Path,
+    show: bool,
+    jpeg_q=None,
+):
+    """One row per image, walking left to right through how the verdict is reached.
+
+    Columns are the pipeline: the picture as it really is, what survives content
+    suppression, its spectrum, where its radial energy sits relative to the two class
+    averages, and the decision that comes out. The point is that a viewer who knows nothing
+    about the architecture can follow a single image across the row and see why it was
+    called REAL or FAKE.
+    """
     plt = ns["plt"]
 
+    residual, spectrum, radial = stream_views(ns, model, images_uint8, device)
     n = len(images_uint8)
-    cols = min(n, 4)
-    rows = int(np.ceil(n / cols))
-    fig, axes = plt.subplots(rows, cols, figsize=(3.0 * cols, 3.4 * rows))
-    axes = np.atleast_1d(axes).ravel()
+    bins = np.arange(len(ref_real))
 
-    for i, ax in enumerate(axes):
-        if i >= n:
-            ax.axis("off")
-            continue
+    # One y-scale for every radial plot: with per-row autoscaling, a curve that sits far
+    # from both class averages looks identical to one that sits right on top of them.
+    deltas = np.concatenate([(radial - ref_real).ravel(), ref_fake - ref_real, [0.0]])
+    margin = 0.10 * (deltas.max() - deltas.min() + 1e-9)
+    y_lo, y_hi = deltas.min() - margin, deltas.max() + margin
+
+    fig, axes = plt.subplots(
+        n, 5,
+        figsize=(17.5, 3.15 * n),
+        gridspec_kw={"width_ratios": [1.0, 1.0, 1.0, 1.35, 1.5]},
+    )
+    axes = np.atleast_2d(axes)
+
+    step_titles = [
+        "1.  The image as it is",
+        "2.  Content suppressed\n(constrained conv)",
+        "3.  Log-magnitude spectrum\n(frequency stream input)",
+        "4.  Spectral energy vs the two class averages",
+        "5.  Verdict",
+    ]
+
+    for i in range(n):
+        truth = int(y_true[i])
         pred = int(probs[i] >= 0.5)
-        ok = pred == int(y_true[i])
+        ok = pred == truth
         confidence = probs[i] if pred == 1 else 1.0 - probs[i]
+
+        # --- 1. the image itself -------------------------------------------------
+        ax = axes[i, 0]
         ax.imshow(images_uint8[i], interpolation="nearest")
-        ax.set_xticks([])
-        ax.set_yticks([])
+        ax.set_xticks([]); ax.set_yticks([])
         for spine in ax.spines.values():
-            spine.set_edgecolor("#2e7d32" if ok else "#c62828")
+            spine.set_edgecolor(REAL_COLOUR if truth == 0 else FAKE_COLOUR)
             spine.set_linewidth(3)
-        ax.set_title(
-            f"truth {CLASS_NAMES[int(y_true[i])]}  ->  said {CLASS_NAMES[pred]}\n"
-            f"{confidence:.1%} confident   gate {gates[i]:.3f}",
-            fontsize=9,
-            color="#2e7d32" if ok else "#c62828",
+        ax.set_ylabel(
+            f"ground truth\n{CLASS_NAMES[truth]}",
+            fontsize=11, fontweight="bold",
+            color=REAL_COLOUR if truth == 0 else FAKE_COLOUR,
         )
 
-    fig.suptitle("DSF-Net, live on held-out CIFAKE test images", fontsize=13)
-    fig.tight_layout()
-    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+        # --- 2. what the spatial stream sees -------------------------------------
+        ax = axes[i, 1]
+        scale = np.percentile(np.abs(residual[i]), 99) + 1e-8
+        ax.imshow(residual[i], cmap="RdBu_r", vmin=-scale, vmax=scale, interpolation="nearest")
+        ax.set_xticks([]); ax.set_yticks([])
+
+        # --- 3. what the frequency stream sees -----------------------------------
+        ax = axes[i, 2]
+        ax.imshow(spectrum[i], cmap="magma", interpolation="nearest")
+        ax.set_xticks([]); ax.set_yticks([])
+
+        # --- 4. where this image's spectrum sits relative to the two classes ------
+        # Plotted as a difference from the average REAL curve. On absolute axes all three
+        # curves lie on top of each other -- the class separation is two orders of
+        # magnitude smaller than the spectrum's own decay -- and the panel says nothing.
+        ax = axes[i, 3]
+        ax.axhline(0.0, color=REAL_COLOUR, ls="--", lw=1.6, label="average REAL")
+        ax.plot(bins, ref_fake - ref_real, color=FAKE_COLOUR, ls="--", lw=1.6, label="average FAKE")
+        ax.plot(
+            bins, radial[i] - ref_real,
+            color="#212121", lw=2.4, marker="o", ms=3.5, label="this image",
+        )
+        ax.set_xlabel("frequency ring (centre -> Nyquist)", fontsize=8)
+        ax.set_ylabel("energy - average REAL", fontsize=8)
+        ax.set_ylim(y_lo, y_hi)  # shared across rows, otherwise the rows cannot be compared
+        ax.tick_params(labelsize=8)
+        if i == 0:
+            ax.legend(fontsize=7.5, loc="upper right", framealpha=0.95)
+
+        # --- 5. the decision -----------------------------------------------------
+        # Drawn by hand on a blank canvas rather than as a real plot: a normal axes puts
+        # its grid, spines and tick labels across the text underneath the bar.
+        ax = axes[i, 4]
+        colour = FAKE_COLOUR if pred == 1 else REAL_COLOUR
+        ax.axis("off")
+        ax.set_xlim(-0.03, 1.03)
+        ax.set_ylim(-2.75, 0.95)
+
+        ax.barh([0], [probs[i]], color=colour, height=0.42)
+        ax.barh([0], [1.0 - probs[i]], left=[probs[i]], color="#eceff1", height=0.42)
+        ax.add_patch(plt.Rectangle((0, -0.21), 1.0, 0.42, fill=False, ec="#9e9e9e", lw=0.9))
+        ax.plot([0.5, 0.5], [-0.34, 0.34], color="#212121", ls="--", lw=1.3)
+        ax.text(0.5, 0.44, "threshold 0.5", ha="center", fontsize=7.5, color="#424242")
+        ax.text(0.0, -0.34, "0", ha="center", va="top", fontsize=7.5, color="#616161")
+        ax.text(0.5, -0.34, "P(FAKE)", ha="center", va="top", fontsize=8, color="#616161")
+        ax.text(1.0, -0.34, "1", ha="center", va="top", fontsize=7.5, color="#616161")
+
+        ax.text(0.0, -1.15, f"P(FAKE) = {probs[i]:.3f}", fontsize=10.5, va="center")
+        ax.text(
+            0.0, -1.75,
+            f"says {CLASS_NAMES[pred]}, {confidence:.1%} confident",
+            fontsize=10.5, fontweight="bold", color=colour, va="center",
+        )
+        ax.text(
+            0.0, -2.35,
+            f"{'CORRECT' if ok else 'WRONG'}      fusion gate = {gates[i]:.3f}",
+            fontsize=10.5, fontweight="bold",
+            color=OK_COLOUR if ok else FAKE_COLOUR, va="center",
+        )
+
+        if i == 0:
+            for col in range(5):
+                axes[i, col].set_title(step_titles[col], fontsize=10.5, pad=10)
+
+    condition = "clean test images" if jpeg_q is None else f"test images degraded to JPEG q{jpeg_q}"
+    fig.suptitle(
+        f"How DSF-Net decides REAL vs FAKE, on {condition}",
+        fontsize=15, fontweight="bold", y=0.995,
+    )
+    fig.text(
+        0.5, 0.005,
+        "Each row is one image, read left to right. Columns 2 and 3 are what the two streams "
+        "actually receive. Column 4 compares this image against the class averages: they "
+        "separate on average but not reliably per image, which is why the frequency stream "
+        "alone scores 4.3 points below the full model. Column 5 is the gated mix and the head.",
+        ha="center", fontsize=9.5, color="#424242",
+    )
+    fig.tight_layout(rect=(0, 0.02, 1, 0.985))
+    fig.savefig(out_path, dpi=150, bbox_inches="tight", facecolor="white")
     print(f"\n  figure written to {out_path.relative_to(ROOT)}")
     if show:
         plt.show()
@@ -225,7 +385,7 @@ def make_figure(ns: dict, images_uint8: np.ndarray, y_true, probs, gates, out_pa
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("-n", "--n-images", type=int, default=8, help="how many test images to sample")
+    parser.add_argument("-n", "--n-images", type=int, default=4, help="how many test images to sample; 4-6 reads best in the figure")
     parser.add_argument("--seed", type=int, default=None, help="sampling seed; omit for a different draw each run")
     parser.add_argument("--jpeg", type=int, default=None, metavar="Q", help="JPEG-compress the sample at quality Q first")
     parser.add_argument("--full", dest="full", action="store_true", default=None, help="score the whole 20k test set")
@@ -319,7 +479,13 @@ def main() -> None:
         if not np.isnan(all_gates).any():
             print(f"  mean gate over the whole test set: {all_gates.mean():.4f}")
 
-    make_figure(ns, sample, sample_y, probs, gates, args.out, args.show)
+    print()
+    print("building the explanation figure (class-average spectral profiles first) ...")
+    ref_real, ref_fake = reference_profiles(ns, model, X_test, y_test, device)
+    make_figure(
+        ns, model, device, sample, sample_y, probs, gates,
+        ref_real, ref_fake, args.out, args.show, jpeg_q=args.jpeg,
+    )
 
 
 if __name__ == "__main__":

@@ -182,6 +182,17 @@ per image so the flat-gate result from Section 7.3 of the report is visible as i
 and with `--jpeg 30` degrades the whole test set to reproduce the 88.4% robustness number
 from `results/robustness.csv`.
 
+It also writes a figure that walks one image at a time through the whole decision:
+
+![How DSF-Net decides REAL vs FAKE](results/figures/17_demo_pipeline.png)
+
+Left to right: the image itself, what survives the constrained convolution once content is
+suppressed, the log-magnitude spectrum the frequency stream reads, this image's radial
+energy against the two class averages, and the probability that comes out. Note that the
+radial profiles separate the classes *on average* but not reliably per image, which is the
+visual form of the ablation result that the frequency stream alone is 4.3 points weaker
+than the full model.
+
 ### Google Colab (the intended path)
 
 1. Upload `notebooks/AIGID_main.ipynb` to Colab, or open it from Drive.
