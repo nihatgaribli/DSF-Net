@@ -20,13 +20,26 @@
 # that observation. It processes each image through two parallel streams, a *spatial* stream fronted by
 # a constrained high-pass filter that suppresses image content, and a *frequency* stream that operates
 # directly on the log-magnitude spectrum plus its radial profile, and fuses them with a **learned
-# per-dimension gate** that decides, per image, how much to trust each view of the evidence.
+# per-dimension gate** *intended* to decide, per image, how much to trust each view of the evidence.
 #
 # We train on **CIFAKE** (60k real CIFAR-10 photographs vs 60k Stable Diffusion v1.4 images at 32x32),
 # compare against three baselines (a classical spectral classifier, the CIFAKE paper's own CNN, and a
 # fine-tuned ResNet-18), run a seven-way ablation, and stress-test every model under JPEG compression,
-# blur, noise and rescaling. The gate turns out to be readable: we can plot how much the network relies
-# on the frequency stream and watch it back off as JPEG compression destroys the spectral evidence.
+# blur, noise and rescaling. DSF-Net reaches **95.71% test accuracy** and **0.9910 ROC-AUC** with 848k
+# parameters, **2.73 points above the published CIFAKE reference (92.98%)**, at 13.2x fewer parameters
+# than a fine-tuned ResNet-18, which still beats it by 2.10 points.
+#
+# **The architectural hypotheses largely did not survive testing, and this notebook reports that
+# outcome rather than working around it.** The entire study was executed **twice, end to end**, which
+# lets every finding be labelled as replicated or not. Three replicated: the frequency stream alone is
+# far weaker than the spatial stream (-4.3 points), removing the constrained forensic front-end
+# *improves* accuracy (+1.0 points), and heavy conventional augmentation *helps* rather than harms
+# (+0.9 points), the opposite of the design argument. The central claim, that gated fusion beats plain
+# concatenation, **did not replicate**: the two runs disagree in sign (+0.02 pp and -0.49 pp). The gate
+# also failed its behavioural test, moving by less than 0.006 across the full JPEG quality range, and
+# Section 18.3 shows it is structurally non-identifiable, so it could never have been read as a trust
+# signal as built. The one intervention that did work is JPEG augmentation: +4.82 points under heavy
+# compression at no cost on clean images.
 #
 # ---
 #
@@ -74,8 +87,10 @@
 # | The signal is **fragile**: JPEG, blur or resizing erase it | Robustness must be measured, not assumed; the model needs a fallback |
 #
 # The third row also inverts a habit: in normal vision work, aggressive augmentation is free accuracy.
-# Here, colour jitter and blur attack precisely the evidence the model depends on. Section 13 measures
-# exactly how much damage that does.
+# Here, colour jitter and blur act directly on the evidence the model depends on, so the expectation is
+# that they should cost accuracy. Section 14 (ablation 7) measures what heavy augmentation actually does,
+# and Section 15 measures what these transforms do when they arrive at test time instead. The first of
+# those two measurements comes out the opposite way round; it is reported in Section 18.1.
 #
 # ### 1.3 Related work
 #
@@ -94,11 +109,16 @@
 #
 # ### 1.4 Contribution of this project
 #
-# 1. A custom dual-stream architecture with an **inspectable gated fusion**: not a fine-tuned backbone.
-# 2. A seven-way ablation that isolates the contribution of *each* design decision.
-# 3. A robustness study showing the gate behaves as designed: it shifts weight away from the frequency
-#    stream exactly when that stream stops being trustworthy.
-# 4. An honest evaluation, including the failure modes and the generalisation gap.
+# 1. A custom dual-stream architecture with an inspectable gated fusion: not a fine-tuned backbone.
+# 2. A seven-way ablation that isolates the contribution of *each* design decision, judged against a
+#    **measured noise floor** rather than against zero.
+# 3. **A full two-run replication of the entire study**, which separates findings that hold from
+#    findings that were artefacts of a single run, including this project's own central hypothesis.
+# 4. Identification of a structural flaw in the gate design that explains its failure, with a concrete
+#    correction proposed for future work (Section 18.3).
+# 5. A ten-condition robustness study and a working mitigation (JPEG augmentation).
+# 6. An honest evaluation: the refuted hypotheses are reported as prominently as the numbers that
+#    worked, including the generalisation gap.
 
 # %% [markdown]
 # ## 2. Environment setup
@@ -1398,10 +1418,12 @@ del _m
 # input signal is a low-amplitude residual and gradients are correspondingly small.
 #
 # **Gated fusion, the core idea.** Concatenation forces the head to use both streams with fixed
-# weighting. A gate lets the network decide *per image and per feature dimension* how much to trust each
-# stream. Crucially, `g` is a number we can read out: Section 15 plots it and shows the network learning
-# to abandon the frequency stream when JPEG compression has destroyed the spectrum. This is the
-# architectural claim, and ablations 3 vs 4 test it directly.
+# weighting. A gate is meant to let the network decide *per image and per feature dimension* how much to
+# trust each stream. Crucially, `g` is a number we can read out, which makes the design falsifiable in
+# two separate ways: ablations 3 vs 4 test whether gating buys accuracy over concatenation, and Section
+# 15.2 plots `g` under degradation to test whether the network actually abandons the frequency stream
+# once JPEG compression has destroyed the spectrum. This is the central architectural claim of the
+# project. **Both halves of it fail; Sections 18.1 and 18.3 report exactly how.**
 
 # %%
 # @smoke
@@ -2273,10 +2295,10 @@ print(f"\nGate moved from {gates[0]:.4f} (clean) to {gates[-1]:.4f} (JPEG q30), 
 # %% [markdown]
 # ### 15.3 Mitigation - training with JPEG augmentation
 #
-# Section 5.2 argued that augmentation which destroys high frequencies is harmful. That argument holds
-# for *clean-image accuracy*. If we expect compressed inputs at deployment, the calculus changes: showing
-# the model compressed images during training teaches it to find whatever fingerprint survives
-# compression.
+# Section 5.2 predicted that augmentation which destroys high frequencies would be harmful. Ablation 7
+# already refuted that on clean accuracy, where heavy augmentation *gains* about 0.9 pp, so the question
+# here is not what compression-style augmentation costs but how much robustness it buys. Showing the
+# model compressed images during training teaches it to find whatever fingerprint survives compression.
 #
 # This is the standard fix in the literature (Wang et al., 2020). We retrain the tuned architecture with
 # random JPEG (quality 40-95, applied to half the samples) and measure the trade-off, how much clean
