@@ -1,0 +1,81 @@
+{
+  "crop": 256,
+  "crops_per_image": 2,
+  "jpeg_quality_range": [
+    75,
+    95
+  ],
+  "held_out": [
+    "BigGAN"
+  ],
+  "splits": {
+    "train": {
+      "total": 28000,
+      "kept": 24000,
+      "held_out": 2000,
+      "dropped": 1440,
+      "kept_real": 12000,
+      "kept_fake": 12000,
+      "dropped_real": 1440,
+      "dropped_fake": 0,
+      "generators_kept": {
+        "Real": 12000,
+        "ADM": 2000,
+        "GLIDE": 2000,
+        "Midjourney": 2000,
+        "SD15": 2000,
+        "VQDM": 2000,
+        "Wukong": 2000
+      },
+      "dropped_for_balance": 560,
+      "cache": {
+        "samples": 48000,
+        "skipped_images": 0,
+        "crop": 256,
+        "array": "train_crops.npy",
+        "meta": "train_meta.npz"
+      },
+      "heldout_cache": {
+        "samples": 4000,
+        "skipped_images": 0,
+        "crop": 128,
+        "array": "train_heldout_crops.npy",
+        "meta": "train_heldout_meta.npz"
+      }
+    },
+    "validation": {
+      "total": 7000,
+      "kept": 6000,
+      "held_out": 500,
+      "dropped": 97,
+      "kept_real": 3000,
+      "kept_fake": 3000,
+      "dropped_real": 97,
+      "dropped_fake": 0,
+      "generators_kept": {
+        "ADM": 500,
+        "Real": 3000,
+        "GLIDE": 500,
+        "Midjourney": 500,
+        "SD15": 500,
+        "VQDM": 500,
+        "Wukong": 500
+      },
+      "dropped_for_balance": 403,
+      "cache": {
+        "samples": 12000,
+        "skipped_images": 0,
+        "crop": 256,
+        "array": "validation_crops.npy",
+        "meta": "validation_meta.npz"
+      },
+      "heldout_cache": {
+        "samples": 1000,
+        "skipped_images": 0,
+        "crop": 128,
+        "array": "validation_heldout_crops.npy",
+        "meta": "validation_heldout_meta.npz"
+      }
+    }
+  }
+}

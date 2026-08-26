@@ -38,3 +38,4 @@ try_image_output.png
 # Synthetic 1024x1024 demonstration inputs and output
 demo_1024/
 results_hires_prepare.log
+hires_cache_build.log
