@@ -28,3 +28,7 @@ presentation/preview/
 
 # Live demo output
 demo_output.png
+
+# Quick-mode wiring checks (meaningless numbers, never part of the study)
+results/_quick_check/
+checkpoints/seeds_quick/
