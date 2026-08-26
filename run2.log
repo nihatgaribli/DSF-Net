@@ -1,0 +1,106 @@
+executing C:\Users\Nihat\Desktop\deep learning final assig\notebooks\AIGID_main.ipynb
+working directory for the kernel: C:\Users\Nihat\Desktop\deep learning final assig\notebooks
+
+C:\Users\Nihat\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[0:00:01] cell   3 | import sys
+[0:00:01] cell   4 | import io
+[0:00:04] cell   6 | def seed_everything(seed: int = 42) -> None:
+[0:00:04] cell   8 | QUICK_RUN = False
+[0:00:04] cell  10 | if IN_COLAB:
+[0:00:04] cell  12 | from datasets import load_dataset
+[0:00:08] cell  14 | def jpeg_signature(pil_image) -> tuple:
+[0:00:08] cell  16 | (comments only)
+[0:00:08] cell  18 | def decode_split(split_ds, desc: str) -> tuple[np.ndarray, np.ndarray]:
+[0:00:09] cell  20 | from sklearn.model_selection import train_test_split
+[0:00:09] cell  23 | def show_grid(images: np.ndarray, labels: np.ndarray, n: int = 8, title: str =
+[0:00:09] cell  25 | def pixel_stats(images: np.ndarray) -> dict:
+[0:00:10] cell  27 | def to_tensor01(images_uint8: np.ndarray) -> torch.Tensor:
+[0:00:10] cell  29 | eda_n = min(EDA_SAMPLE, len(y_train))
+[0:00:11] cell  31 | N_RADIAL_BINS = 16
+[0:00:11] cell  33 | rp = radial_features(eda_X)
+[0:00:11] cell  35 | _train_float = X_train.astype(np.float32) / 255.0
+[0:00:15] cell  37 | def jpeg_compress(img_uint8: np.ndarray, quality: int) -> np.ndarray:
+[0:00:15] cell  40 | from sklearn.metrics import (
+[0:00:15] cell  42 | @dataclass
+[0:00:15] cell  44 | @torch.no_grad()
+[0:00:15] cell  46 | from sklearn.linear_model import LogisticRegression
+[0:00:17] cell  48 | class CifakeCNN(nn.Module):
+[0:00:17] cell  50 | from torchvision.models import resnet18, ResNet18_Weights
+[0:00:18] cell  52 | def _round8(channels: float) -> int:
+[0:00:18] cell  54 | _variants = {
+[0:00:18] cell  56 | BASE_CFG = TrainConfig(epochs=30, lr=3e-4, weight_decay=1e-4, patience=5, seed
+[0:03:54] cell  57 | models["ResNet-18"] = build_resnet18(pretrained=True)
+[0:11:52] cell  58 | models["DSF-Net"] = DSFNet(DSFConfig(mode="gated"))
+[0:15:21] cell  60 | fig, axes = plt.subplots(1, 3, figsize=(16, 4.3))
+[0:15:22] cell  62 | TUNE_CFG = TrainConfig(epochs=10, warmup_epochs=1, patience=10, seed=SEED)
+[0:34:12] cell  63 | fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+[0:34:13] cell  65 | BEST_DSF_CFG = DSFConfig(mode="gated", dropout=best_dropout, width=best_width)
+[0:39:23] cell  67 | test_metrics: dict[str, dict] = {}
+[0:39:37] cell  69 | fig, axes = plt.subplots(1, 2, figsize=(14, 5.4))
+[0:39:38] cell  71 | fig, axes = plt.subplots(1, 2, figsize=(13, 4.6))
+[0:39:38] cell  73 | ABLATION_VARIANTS = {
+[1:15:55] cell  74 | full_acc = ablation_df.loc["4. gated fusion (full)", "test_acc"]
+[1:15:56] cell  76 | tuned_acc = comparison.loc["DSF-Net (tuned)", "accuracy"]
+[1:15:56] cell  78 | from PIL import ImageFilter
+[1:15:56] cell  80 | def fingerprint_map(images: np.ndarray, labels: np.ndarray) -> np.ndarray:
+[1:15:57] cell  82 | robustness_models = {
+[1:16:52] cell  83 | fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+[1:16:53] cell  85 | jpeg_train_loader = make_loader(
+[1:26:21] cell  87 | RUN_OOD_PROBE = False  # set True to attempt the cross-generator probe
+[1:26:21] cell  90 | class GradCAM:
+[1:26:22] cell  92 | from sklearn.manifold import TSNE
+[1:26:28] cell  94 | fig, axes = plt.subplots(1, 2, figsize=(13, 4.8))
+[1:26:29] cell  96 | dsf_probs = test_probs["DSF-Net (tuned)"]
+[1:26:30] cell  98 | digest = []
+
+[1:26:32] ALL CELLS EXECUTED SUCCESSFULLY
+[1:26:32] notebook written back to C:\Users\Nihat\Desktop\deep learning final assig\notebooks\AIGID_main.ipynb
+
+figures produced: 16
+   01_sample_grid.png
+   02_mean_spectrum_difference.png
+   03_radial_profile.png
+   04_training_curves.png
+   05_hyperparameter_sweeps.png
+   06_roc_and_confusion.png
+   07_accuracy_vs_cost.png
+   08_ablation.png
+   09_fingerprint_under_degradation.png
+   10_robustness_and_gate.png
+   11_jpeg_augmentation_tradeoff.png
+   12_gradcam.png
+   13_tsne.png
+   14_gate_and_calibration.png
+   15_error_analysis.png
+   16_error_vs_detail.png
+
+--- results/digest.txt ---
+Test accuracy, DSF-Net (tuned): 0.9571
+Test ROC-AUC,  DSF-Net (tuned): 0.9910
+vs CIFAKE paper (0.9298): +0.0273
+vs ResNet-18 accuracy:   -0.0210
+vs CIFAKE-CNN accuracy:  +0.0103
+Parameter ratio vs ResNet-18: 13.2x smaller
+Speed ratio vs ResNet-18: 2.3x faster
+
+Run-to-run noise floor (same config twice): 0.08 pp
+
+Ablation (test accuracy relative to the full gated model):
+   1. spatial only           -0.45 pp
+   2. frequency only         -4.35 pp
+   3. concat fusion          -0.49 pp
+   4. gated fusion (full)    +0.00 pp
+   5. no constrained conv    +1.08 pp
+   6. no radial features     -0.08 pp
+   7. heavy augmentation     +0.91 pp
+
+Robustness (accuracy drop, clean -> JPEG q30):
+   frequency only      8.11 pp
+   DSF-Net (tuned)     7.33 pp
+   spatial only        7.08 pp
+   CIFAKE-CNN          5.66 pp
+   ResNet-18           5.48 pp
+
+Gate, clean -> JPEG q30: 0.3607 -> 0.3622 (+0.0015)
+JPEG augmentation: clean +0.72 pp, JPEG q30 +4.82 pp

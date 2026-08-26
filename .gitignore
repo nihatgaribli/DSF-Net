@@ -1,0 +1,27 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Cached dataset arrays and downloaded data
+data/
+*.npy
+*.npz
+
+# Trained weights
+checkpoints/
+*.pt
+*.pth
+
+# Generated outputs are kept, but not the large intermediates
+results/**/*.tmp
+
+# Editor / OS
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Scratch
+*.log.tmp
+
+# Slide preview PNGs: regenerable from the .pptx, and they go stale on every edit
+presentation/preview/

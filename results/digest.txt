@@ -1,0 +1,28 @@
+Test accuracy, DSF-Net (tuned): 0.9571
+Test ROC-AUC,  DSF-Net (tuned): 0.9910
+vs CIFAKE paper (0.9298): +0.0273
+vs ResNet-18 accuracy:   -0.0210
+vs CIFAKE-CNN accuracy:  +0.0103
+Parameter ratio vs ResNet-18: 13.2x smaller
+Speed ratio vs ResNet-18: 2.3x faster
+
+Run-to-run noise floor (same config twice): 0.08 pp
+
+Ablation (test accuracy relative to the full gated model):
+   1. spatial only           -0.45 pp
+   2. frequency only         -4.35 pp
+   3. concat fusion          -0.49 pp
+   4. gated fusion (full)    +0.00 pp
+   5. no constrained conv    +1.08 pp
+   6. no radial features     -0.08 pp
+   7. heavy augmentation     +0.91 pp
+
+Robustness (accuracy drop, clean -> JPEG q30):
+   frequency only      8.11 pp
+   DSF-Net (tuned)     7.33 pp
+   spatial only        7.08 pp
+   CIFAKE-CNN          5.66 pp
+   ResNet-18           5.48 pp
+
+Gate, clean -> JPEG q30: 0.3607 -> 0.3622 (+0.0015)
+JPEG augmentation: clean +0.72 pp, JPEG q30 +4.82 pp
