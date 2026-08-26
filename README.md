@@ -129,6 +129,7 @@ notebooks/
 tools/
   demo.py                           <- live demo: trained model, real test images, seconds
   seed_sweep.py                     <- retrains every ablation across N seeds, with paired tests
+  try_image.py                      <- run the model on any image, and show why the answer is not evidence
   py2ipynb.py                       <- rebuilds the .ipynb from the .py
   smoke_test.py                     <- runs the model/training code on synthetic data, no dataset needed
   pipeline_test.py                  <- runs EVERY notebook cell end to end on synthetic data
