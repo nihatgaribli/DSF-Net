@@ -1,0 +1,56 @@
+{
+  "dsfnet": {
+    "A  256px, real vs seen generators": {
+      "accuracy": 0.948,
+      "roc_auc": 0.987851,
+      "recall_fake": 0.956,
+      "specificity_real": 0.94,
+      "n": 2000
+    },
+    "B  128px, real vs seen generators": {
+      "accuracy": 0.8655,
+      "roc_auc": 0.9287719999999999,
+      "recall_fake": 0.861,
+      "specificity_real": 0.87,
+      "n": 2000
+    },
+    "C  128px, real vs BigGAN (unseen)": {
+      "accuracy": 0.6885,
+      "roc_auc": 0.7863100000000002,
+      "recall_fake": 0.507,
+      "specificity_real": 0.87,
+      "n": 2000
+    },
+    "_deltas_pp": {
+      "resolution_shift": -8.249999999999991,
+      "generator_shift": -17.700000000000003
+    }
+  },
+  "resnet18": {
+    "A  256px, real vs seen generators": {
+      "accuracy": 0.947,
+      "roc_auc": 0.98793,
+      "recall_fake": 0.95,
+      "specificity_real": 0.944,
+      "n": 2000
+    },
+    "B  128px, real vs seen generators": {
+      "accuracy": 0.798,
+      "roc_auc": 0.8784435,
+      "recall_fake": 0.657,
+      "specificity_real": 0.939,
+      "n": 2000
+    },
+    "C  128px, real vs BigGAN (unseen)": {
+      "accuracy": 0.5825,
+      "roc_auc": 0.7313120000000001,
+      "recall_fake": 0.226,
+      "specificity_real": 0.939,
+      "n": 2000
+    },
+    "_deltas_pp": {
+      "resolution_shift": -14.899999999999991,
+      "generator_shift": -21.550000000000004
+    }
+  }
+}

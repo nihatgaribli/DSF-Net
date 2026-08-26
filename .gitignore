@@ -39,3 +39,4 @@ try_image_output.png
 demo_1024/
 results_hires_prepare.log
 hires_cache_build.log
+hires_train.log
