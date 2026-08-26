@@ -92,6 +92,16 @@ def load_notebook_namespace(quick: bool) -> dict:
     sys.modules["nb_seed_sweep"] = module
     ns: dict = module.__dict__
 
+    # Section 4's EDA cells run before any training and they call save_fig, which writes
+    # straight into results/figures. Loading the namespace would therefore regenerate
+    # figures 01-03 of the submitted study as a side effect, and under --quick it would
+    # regenerate them from a 2,000-image subsample instead of 20,000. Redirect the figure
+    # and results directories to a scratch path as soon as the notebook defines them;
+    # save_fig looks FIG_DIR up globally at call time, so rebinding is enough.
+    scratch = ROOT / "results" / "_sweep_scratch"
+    scratch.mkdir(parents=True, exist_ok=True)
+    redirected = False
+
     executed = 0
     for cell in cells:
         if cell["cell_type"] != "code":
@@ -105,6 +115,11 @@ def load_notebook_namespace(quick: bool) -> dict:
             source = source.replace("QUICK_RUN = False", "QUICK_RUN = True")
         exec(compile(source, f"<cell {executed}>", "exec"), ns)
         executed += 1
+
+        if not redirected and "FIG_DIR" in ns:
+            ns["FIG_DIR"] = scratch
+            ns["RESULTS_DIR"] = scratch  # DATA_DIR is left alone: the cache lives there
+            redirected = True
 
     class _NoBar:
         def __init__(self, iterable=None, **kwargs):
