@@ -434,11 +434,30 @@ else:
 
 if QUICK_RUN:
     q = np.random.default_rng(SEED)
-    keep_tv = q.choice(len(y_trainval), 6000, replace=False)
-    keep_te = q.choice(len(y_test), 2000, replace=False)
+
+    def _balanced_subsample(labels: np.ndarray, n_keep: int) -> np.ndarray:
+        """Draw n_keep indices, half from each class.
+
+        A plain random subsample is not good enough. Drawing 2,000 images at random from a
+        50/50 population gives a class ratio with a standard error of 0.011, so the
+        balance assertion in Section 3.4 (tolerance 0.01) fails about a third of the time
+        purely by chance. Stratifying here keeps the quick run balanced by construction, so
+        a failed assertion means a real problem instead of an unlucky draw.
+        """
+        per_class = n_keep // 2
+        picks = [
+            q.choice(np.flatnonzero(labels == c), per_class, replace=False)
+            for c in (0, 1)
+        ]
+        idx = np.concatenate(picks)
+        q.shuffle(idx)  # otherwise the subsample is class-ordered, the trap noted in 3.2
+        return idx
+
+    keep_tv = _balanced_subsample(y_trainval, 6000)
+    keep_te = _balanced_subsample(y_test, 2000)
     X_trainval, y_trainval = X_trainval[keep_tv], y_trainval[keep_tv]
     X_test, y_test = X_test[keep_te], y_test[keep_te]
-    print("QUICK_RUN: subsampled to 6,000 train+val and 2,000 test images")
+    print("QUICK_RUN: subsampled to 6,000 train+val and 2,000 test images, stratified")
 
 print(f"\ntrain+val images {X_trainval.shape} labels {y_trainval.shape}")
 print(f"test       images {X_test.shape} labels {y_test.shape}")
