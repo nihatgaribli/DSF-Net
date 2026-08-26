@@ -160,6 +160,7 @@ test images in front of you in about three seconds:
 python tools/demo.py                # 8 random test images + full test-set score
 python tools/demo.py -n 12 --seed 7 # a different sample
 python tools/demo.py --jpeg 30      # same, but JPEG-compressed to quality 30 first
+python tools/demo.py --smooth       # interpolate the 32x32 photos for a cleaner slide
 ```
 
 ```text
@@ -189,6 +190,8 @@ It also writes a figure that walks one image at a time through the whole decisio
 Left to right: the image itself, what survives the constrained convolution once content is
 suppressed, the log-magnitude spectrum the frequency stream reads, this image's radial
 energy against the two class averages, and the probability that comes out. Note that the
+photos are 32x32 because that is the dataset's resolution; `--smooth` interpolates them for
+display without changing anything the model sees. Note that the
 radial profiles separate the classes *on average* but not reliably per image, which is the
 visual form of the ablation result that the frequency stream alone is 4.3 points weaker
 than the full model.

@@ -243,6 +243,7 @@ def make_figure(
     out_path: Path,
     show: bool,
     jpeg_q=None,
+    smooth: bool = False,
 ):
     """One row per image, walking left to right through how the verdict is reached.
 
@@ -271,8 +272,11 @@ def make_figure(
     )
     axes = np.atleast_2d(axes)
 
+    # CIFAKE images really are 32x32, so the blockiness is the data, not the figure.
+    # Say which of the two is on screen rather than leaving the viewer to guess.
+    photo_note = "(32x32, upscaled for display)" if smooth else "(32x32, the dataset's real size)"
     step_titles = [
-        "1.  The image as it is",
+        f"1.  The image as it is\n{photo_note}",
         "2.  Content suppressed\n(constrained conv)",
         "3.  Log-magnitude spectrum\n(frequency stream input)",
         "4.  Spectral energy vs the two class averages",
@@ -287,7 +291,9 @@ def make_figure(
 
         # --- 1. the image itself -------------------------------------------------
         ax = axes[i, 0]
-        ax.imshow(images_uint8[i], interpolation="nearest")
+        # "nearest" shows the true pixels; --smooth interpolates them for a cleaner look
+        # on video. Display only: the model is fed the raw 32x32 either way.
+        ax.imshow(images_uint8[i], interpolation="lanczos" if smooth else "nearest")
         ax.set_xticks([]); ax.set_yticks([])
         for spine in ax.spines.values():
             spine.set_edgecolor(REAL_COLOUR if truth == 0 else FAKE_COLOUR)
@@ -376,8 +382,14 @@ def make_figure(
         ha="center", fontsize=9.5, color="#424242",
     )
     fig.tight_layout(rect=(0, 0.02, 1, 0.985))
-    fig.savefig(out_path, dpi=150, bbox_inches="tight", facecolor="white")
-    print(f"\n  figure written to {out_path.relative_to(ROOT)}")
+    fig.savefig(out_path, dpi=220, bbox_inches="tight", facecolor="white")
+    # A --out given as a relative path is not under ROOT, and relative_to would raise
+    # *after* the figure has already been written, which looks like a failed run.
+    try:
+        shown = out_path.resolve().relative_to(ROOT)
+    except ValueError:
+        shown = out_path
+    print(f"\n  figure written to {shown}")
     if show:
         plt.show()
     plt.close(fig)
@@ -391,6 +403,7 @@ def main() -> None:
     parser.add_argument("--full", dest="full", action="store_true", default=None, help="score the whole 20k test set")
     parser.add_argument("--no-full", dest="full", action="store_false", help="skip the whole-test-set pass")
     parser.add_argument("--no-show", dest="show", action="store_false", help="do not open a figure window")
+    parser.add_argument("--smooth", action="store_true", help="interpolate the 32x32 photos for display; does not change what the model sees")
     parser.add_argument("--out", type=Path, default=ROOT / "demo_output.png", help="where to write the figure")
     args = parser.parse_args()
 
@@ -484,7 +497,7 @@ def main() -> None:
     ref_real, ref_fake = reference_profiles(ns, model, X_test, y_test, device)
     make_figure(
         ns, model, device, sample, sample_y, probs, gates,
-        ref_real, ref_fake, args.out, args.show, jpeg_q=args.jpeg,
+        ref_real, ref_fake, args.out, args.show, jpeg_q=args.jpeg, smooth=args.smooth,
     )
 
 
