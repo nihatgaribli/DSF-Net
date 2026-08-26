@@ -25,3 +25,6 @@ Thumbs.db
 
 # Slide preview PNGs: regenerable from the .pptx, and they go stale on every edit
 presentation/preview/
+
+# Live demo output
+demo_output.png
