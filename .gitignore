@@ -34,3 +34,7 @@ results/_quick_check/
 checkpoints/seeds_quick/
 results/_sweep_scratch/
 try_image_output.png
+
+# Synthetic 1024x1024 demonstration inputs and output
+demo_1024/
+results_hires_prepare.log
