@@ -3,6 +3,8 @@
 #
 # **Deep Learning - Final Project**
 #
+# **Author:** Nihat Garibli
+#
 # ---
 #
 # ## Abstract
