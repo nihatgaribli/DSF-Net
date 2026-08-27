@@ -4,3 +4,4 @@ variant,seed,params,best_val_auc,val_acc,val_auc,val_ece,biggan_recall,train_tim
 4. gated fusion (full),42,848066,0.988356,0.951417,0.988356,0.037957,0.506,36.3
 1. spatial only,43,702930,0.992071,0.959833,0.992071,0.043383,0.664,4361.5
 3. concat fusion,43,806850,0.988686,0.952667,0.988686,0.038358,0.609,5557.6
+4. gated fusion (full),43,848066,0.989015,0.951583,0.989015,0.039648,0.616,5537.7

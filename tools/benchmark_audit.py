@@ -120,12 +120,23 @@ def find_columns(features) -> tuple:
 
 
 def is_cached(ds_id: str) -> bool:
-    """Whether this dataset is already in the local Hugging Face cache."""
+    """Whether this dataset's data files are already on disk, not just its metadata folder.
+
+    The directory alone is not enough: Hugging Face creates it as soon as anything about the
+    dataset is fetched, so a folder holding a megabyte of metadata looks identical to a fully
+    downloaded copy. Taking the folder as proof sent this script down the non-streaming path
+    for a dataset it did not have, which then began downloading the whole thing and sat there
+    for ninety minutes. Require actual data files, and enough of them to be real.
+    """
     from huggingface_hub.constants import HF_HUB_CACHE
 
-    folder = "datasets--" + ds_id.replace("/", "--")
-    path = Path(HF_HUB_CACHE) / folder
-    return path.exists() and any(path.rglob("*.parquet")) or path.exists()
+    path = Path(HF_HUB_CACHE) / ("datasets--" + ds_id.replace("/", "--"))
+    if not path.exists():
+        return False
+    data_files = [p for p in path.rglob("*")
+                  if p.is_file() and p.suffix.lower() in {".parquet", ".arrow", ".zip", ".tar"}]
+    total_mb = sum(p.stat().st_size for p in data_files) / 1e6
+    return total_mb > 50
 
 
 def audit(spec: dict, n: int) -> dict:
