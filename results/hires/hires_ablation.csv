@@ -1,0 +1,5 @@
+variant,params,best_val_auc,val_acc,val_auc,val_f1,val_ece,biggan_recall,train_time_s,reused
+1. spatial only,702930,0.992215,0.960917,0.992215,0.961198,0.043059,0.684,4294.2,False
+2. frequency only,75633,0.930569,0.852583,0.930569,0.852103,0.051906,0.333,2102.8,False
+3. concat fusion,806850,0.988042,0.95075,0.988042,0.951032,0.03843,0.383,5696.0,False
+4. gated fusion (full),848066,0.988356,0.951417,0.988356,0.951742,0.037957,0.506,36.3,True
