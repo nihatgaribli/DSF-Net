@@ -267,9 +267,15 @@ def build_report() -> str:
              f"{acc.min():>8.4f} {acc.max():>8.4f} {len(acc):>3}")
 
     emit()
-    emit(f"Measured noise floor: the full model's own spread across seeds is "
-         f"{df[df['variant'] == BASELINE_VARIANT]['test_acc'].std(ddof=1) * 100:.3f} pp (std). "
-         "Any ablation delta smaller than that is not an effect.")
+    floor = df[df["variant"] == BASELINE_VARIANT]["test_acc"].std(ddof=1) * 100
+    emit(f"The full model's own spread across seeds is {floor:.3f} pp (std). That is the "
+         "run-to-run noise on a single number, and it is why a lone accuracy figure quoted "
+         "to four decimals means little.")
+    emit("It is NOT the threshold for the table below. Every variant is trained on the same "
+         "seeds as the reference, so the paired difference cancels the shared seed effect "
+         "and has a much smaller spread than either variant alone. A paired interval can "
+         "therefore resolve an effect well below this floor. The confidence interval is the "
+         "decision rule; this number is context.")
     emit()
     emit(f"Paired comparison against '{BASELINE_VARIANT}', same seeds throughout:")
     emit()
@@ -297,10 +303,10 @@ def build_report() -> str:
         emit(f"{variant:<24} {mean:>+9.2f} {ci:>19} {p_text:>10}")
 
     emit()
-    emit("Reading this table: the confidence interval is the honest output. With five seeds a "
-         "p-value is weak evidence either way, but an interval that straddles zero means the "
-         "study cannot tell the sign of that effect, which is exactly the claim the report "
-         "makes about gated fusion versus concatenation.")
+    emit("Reading this table: the interval is the honest output. An interval that straddles "
+         "zero means the effect's sign is unresolved at five seeds; an interval clear of zero "
+         "means the effect is real at this sample size, however small it looks. With five "
+         "seeds the p-values are weak on their own and should not be read as thresholds.")
 
     report = "\n".join(lines) + "\n"
     OUT_DIGEST.write_text(report, encoding="utf-8")

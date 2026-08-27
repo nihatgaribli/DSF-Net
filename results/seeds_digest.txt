@@ -1,0 +1,27 @@
+Seeds: [np.int64(42), np.int64(43), np.int64(44), np.int64(45), np.int64(46)]  (5 per variant)
+
+variant                   mean acc      std      min      max   n
+----------------------------------------------------------------
+1. spatial only             0.9550   0.0026   0.9510   0.9582   5
+2. frequency only           0.9080   0.0026   0.9056   0.9123   5
+3. concat fusion            0.9566   0.0031   0.9525   0.9607   5
+4. gated fusion (full)      0.9555   0.0036   0.9507   0.9597   5
+5. no constrained conv      0.9660   0.0013   0.9647   0.9679   5
+6. no radial features       0.9575   0.0036   0.9533   0.9616   5
+7. heavy augmentation       0.9643   0.0014   0.9626   0.9662   5
+
+The full model's own spread across seeds is 0.364 pp (std). That is the run-to-run noise on a single number, and it is why a lone accuracy figure quoted to four decimals means little.
+It is NOT the threshold for the table below. Every variant is trained on the same seeds as the reference, so the paired difference cancels the shared seed effect and has a much smaller spread than either variant alone. A paired interval can therefore resolve an effect well below this floor. The confidence interval is the decision rule; this number is context.
+
+Paired comparison against '4. gated fusion (full)', same seeds throughout:
+
+variant                   delta pp              95% CI   t-test p
+------------------------------------------------------------------
+1. spatial only              -0.05      [-0.50, +0.39]     0.7513
+2. frequency only            -4.75      [-5.08, -4.42]     0.0000
+3. concat fusion             +0.11      [-0.23, +0.44]     0.4223
+5. no constrained conv       +1.05      [+0.60, +1.49]     0.0028
+6. no radial features        +0.20      [+0.07, +0.33]     0.0118
+7. heavy augmentation        +0.88      [+0.37, +1.38]     0.0083
+
+Reading this table: the interval is the honest output. An interval that straddles zero means the effect's sign is unresolved at five seeds; an interval clear of zero means the effect is real at this sample size, however small it looks. With five seeds the p-values are weak on their own and should not be read as thresholds.
