@@ -47,6 +47,11 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT_JSON = ROOT / "results" / "benchmark_audit.json"
 SEED = 42
 
+# Hard cap on rows traversed per benchmark. Some of these are millions of images and tens of
+# gigabytes; the audit needs coverage across the file, not all of it, and an unbounded pass
+# would spend hours on one dataset for no extra information.
+STREAM_BUDGET = 40_000
+
 # Benchmarks to audit. `label` names the column holding the real/fake label; when it is None
 # the loader tries to infer one. `config` and `split` are passed straight through.
 BENCHMARKS = [
@@ -114,16 +119,57 @@ def find_columns(features) -> tuple:
     return image_col, label_col
 
 
+def is_cached(ds_id: str) -> bool:
+    """Whether this dataset is already in the local Hugging Face cache."""
+    from huggingface_hub.constants import HF_HUB_CACHE
+
+    folder = "datasets--" + ds_id.replace("/", "--")
+    path = Path(HF_HUB_CACHE) / folder
+    return path.exists() and any(path.rglob("*.parquet")) or path.exists()
+
+
 def audit(spec: dict, n: int) -> dict:
     from datasets import Image as HFImage
     from datasets import load_dataset
-    from sklearn.model_selection import cross_val_score
-    from sklearn.tree import DecisionTreeClassifier, export_text
 
     name, ds_id = spec["name"], spec["id"]
     print(f"\n--- {name}  ({ds_id}) ---", flush=True)
 
-    ds = load_dataset(ds_id, split=spec.get("split", "train"), streaming=True)
+    # A cached dataset is read from disk with random access, which is instant and gives a
+    # genuinely uniform sample. Streaming does not use the local cache: it re-reads the shards
+    # from the hub, and sampling across a class-ordered file then forces a full download of
+    # every shard. That is what made the first attempt stall for two hours on a dataset
+    # already sitting on this disk.
+    cached = is_cached(ds_id)
+    split_name = spec.get("split", "train")
+
+    if cached:
+        print("    cached locally; loading with random access", flush=True)
+        full = load_dataset(ds_id, split=split_name)
+        image_col, label_col = find_columns(full.features)
+        if image_col is None or label_col is None:
+            return {"name": name, "id": ds_id, "status": "skipped",
+                    "reason": f"no image/label column found in {list(full.features)}"}
+        full = full.cast_column(image_col, HFImage(decode=False))
+        rng = np.random.default_rng(SEED)
+        picks = sorted(rng.choice(len(full), min(n, len(full)), replace=False).tolist())
+        rows, labels, positions = [], [], []
+        for pos in picks:
+            item = full[pos]
+            raw = item[image_col]
+            raw = raw.get("bytes") if isinstance(raw, dict) else raw
+            if not raw:
+                continue
+            feats = container_features(raw)
+            if feats is None:
+                continue
+            rows.append(feats)
+            labels.append(int(item[label_col]))
+            positions.append(pos)
+        print(f"    collected {len(rows):,} images from {len(full):,} rows", flush=True)
+        return finish(name, ds_id, rows, labels, positions)
+
+    ds = load_dataset(ds_id, split=split_name, streaming=True)
     image_col, label_col = find_columns(ds.features)
     if image_col is None or label_col is None:
         return {"name": name, "id": ds_id, "status": "skipped",
@@ -145,41 +191,57 @@ def audit(spec: dict, n: int) -> dict:
     except Exception:
         total = None
 
-    rows, labels, positions = [], [], []
-    chunks = 12
-    if total and total > n:
-        per_chunk = max(1, n // chunks)
-        offsets = np.linspace(0, total - per_chunk, chunks).astype(int)
-        print(f"    split has {total:,} rows; sampling {per_chunk} from each of "
-              f"{chunks} offsets", flush=True)
-    else:
-        per_chunk, offsets = n, [0]
-        print("    split size unknown; reading from the start only", flush=True)
+    # One strided pass, never `.skip()`. An IterableDataset re-reads from the beginning on
+    # every skip, so sampling twelve offsets from a 28,000-row split costs roughly 168,000
+    # image reads to collect 1,200 - which is how the first version of this script stalled
+    # for two hours on a single benchmark. A single pass taking every stride-th row costs
+    # one traversal and gives the same coverage across the file.
+    # Sequential, stride 1. Striding across an uncached remote split would force every shard
+    # to be downloaded to collect a few hundred samples, which is the expensive case this
+    # path exists to avoid. Reading the head downloads the minimum. The cost is that a split
+    # stored in label order yields one class, and `finish` reports that as unauditable rather
+    # than guessing; the cached path above has no such limitation.
+    stride, budget = 1, STREAM_BUDGET
+    print(f"    not cached; streaming the first rows (cap {budget:,})"
+          + (f" of {total:,}" if total else ""), flush=True)
 
-    for offset in offsets:
-        stream = ds.skip(int(offset)).take(int(per_chunk)) if len(offsets) > 1 else ds
-        for j, item in enumerate(stream):
-            if len(rows) >= n:
-                break
-            raw = item[image_col]
-            raw = raw.get("bytes") if isinstance(raw, dict) else raw
-            if not raw:
-                continue
-            feats = container_features(raw)
-            if feats is None:
-                continue
-            rows.append(feats)
-            labels.append(int(item[label_col]))
-            positions.append(int(offset) + j)
-        if len(rows) >= n:
+    rows, labels, positions = [], [], []
+    for i, item in enumerate(ds):
+        if len(rows) >= n or i >= budget:
             break
-    print(f"    collected {len(rows):,} images", flush=True)
+        if i % stride:
+            continue
+        raw = item[image_col]
+        raw = raw.get("bytes") if isinstance(raw, dict) else raw
+        if not raw:
+            continue
+        feats = container_features(raw)
+        if feats is None:
+            continue
+        rows.append(feats)
+        labels.append(int(item[label_col]))
+        positions.append(i)
+        if len(rows) % 250 == 0:
+            print(f"    collected {len(rows):,} of {n:,}", flush=True)
+    print(f"    collected {len(rows):,} images from {min(i + 1, budget):,} rows", flush=True)
+
+    return finish(name, ds_id, rows, labels, positions)
+
+
+def finish(name: str, ds_id: str, rows: list, labels: list, positions: list) -> dict:
+    """Score a collected sample. Shared by the cached and streaming paths."""
+    from sklearn.model_selection import cross_val_score
+    from sklearn.tree import DecisionTreeClassifier, export_text
 
     X, y = np.array(rows, dtype=np.float64), np.array(labels)
+    if len(y) == 0:
+        return {"name": name, "id": ds_id, "status": "skipped", "reason": "no images read"}
     classes, counts = np.unique(y, return_counts=True)
     if len(classes) < 2:
         return {"name": name, "id": ds_id, "status": "skipped",
-                "reason": f"only one class present ({classes.tolist()})", "n": len(y)}
+                "reason": f"only one class in the sample ({classes.tolist()}); the split is "
+                          "probably ordered by label and could not be sampled across",
+                "n": int(len(y))}
 
     majority = counts.max() / counts.sum()
     tree = DecisionTreeClassifier(max_depth=3, random_state=SEED, class_weight="balanced")
