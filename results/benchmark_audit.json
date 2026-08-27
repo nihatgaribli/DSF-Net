@@ -1,0 +1,72 @@
+{
+  "CIFAKE": {
+    "name": "CIFAKE",
+    "id": "dragonintelligence/CIFAKE-image-dataset",
+    "status": "ok",
+    "n": 1200,
+    "majority_class_share": 0.5125,
+    "order_accuracy": 0.8968938920158432,
+    "container_accuracy": 0.5,
+    "container_accuracy_std": 0.0,
+    "single_rule_accuracy": 0.5,
+    "single_rule_feature": "none",
+    "single_rule_threshold": NaN,
+    "tree": "|--- class: 1\n"
+  },
+  "Tiny-GenImage": {
+    "name": "Tiny-GenImage",
+    "id": "TheKernel01/Tiny-GenImage",
+    "status": "ok",
+    "n": 1200,
+    "majority_class_share": 0.5225,
+    "order_accuracy": 0.5,
+    "container_accuracy": 1.0,
+    "container_accuracy_std": 0.0,
+    "single_rule_accuracy": 1.0,
+    "single_rule_feature": "is_jpeg",
+    "single_rule_threshold": 0.5,
+    "tree": "|--- is_jpeg <= 0.50\n|   |--- width <= 192.00\n|   |   |--- class: 1\n|   |--- width >  192.00\n|   |   |--- class: 1\n|--- is_jpeg >  0.50\n|   |--- aspect <= 0.54\n|   |   |--- class: 0\n|   |--- aspect >  0.54\n|   |   |--- class: 0\n"
+  },
+  "GenImage-ADM": {
+    "name": "GenImage-ADM",
+    "id": "bitmind/GenImage_ADM",
+    "status": "skipped",
+    "reason": "no image/label column found in ['image']"
+  },
+  "GenImage-GLIDE": {
+    "name": "GenImage-GLIDE",
+    "id": "bitmind/GenImage_glide",
+    "status": "skipped",
+    "reason": "no image/label column found in ['image']"
+  },
+  "GenImage-VQDM": {
+    "name": "GenImage-VQDM",
+    "id": "bitmind/GenImage_VQDM",
+    "status": "skipped",
+    "reason": "no image/label column found in ['image']"
+  },
+  "GenImage-Midjourney": {
+    "name": "GenImage-Midjourney",
+    "id": "bitmind/GenImage_MidJourney",
+    "status": "skipped",
+    "reason": "no image/label column found in ['image']"
+  },
+  "GenImage-BigGAN": {
+    "name": "GenImage-BigGAN",
+    "id": "bitmind/GenImage_BigGAN",
+    "status": "skipped",
+    "reason": "no image/label column found in ['image']"
+  },
+  "GenImage++": {
+    "name": "GenImage++",
+    "id": "Lunahera/genimagepp",
+    "status": "skipped",
+    "reason": "no image/label column found in ['png', '__key__', '__url__']"
+  },
+  "gen-image-detection": {
+    "name": "gen-image-detection",
+    "id": "qianyuancs/gen-image-detection-datasets",
+    "status": "failed",
+    "reason": "'NoneType' object has no attribute 'items'"
+  }
+}
