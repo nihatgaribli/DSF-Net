@@ -77,17 +77,53 @@ def channel_stats(arr, sample: int = 4000, seed: int = 0):
     return batch.mean(axis=(0, 1, 2)).astype(np.float32), batch.std(axis=(0, 1, 2)).astype(np.float32)
 
 
-def make_dataset(ns, arr, labels, mean, std, train: bool, crop: int = 256):
+def _heavy_augment(ns, x):
+    """The conventional augmentation stack, for ablation 7 only.
+
+    The same three operations as the notebook's `_heavy_augment`, with the pad-and-crop
+    scaled from 32px to whatever crop is in use so it stays proportionate: at 32px it
+    padded by 4, which is one eighth of the side.
+    """
+    import random
+
+    torch = ns["torch"]
+    F = ns["F"] if "F" in ns else __import__("torch.nn.functional", fromlist=["x"])
+
+    if random.random() < 0.8:
+        x = (x * random.uniform(0.7, 1.3)).clamp(0, 1)
+        m = x.mean()
+        x = ((x - m) * random.uniform(0.7, 1.3) + m).clamp(0, 1)
+
+    side = x.shape[-1]
+    if random.random() < 0.5:
+        pad = max(1, side // 8)
+        padded = F.pad(x, (pad, pad, pad, pad))
+        top, left = random.randint(0, 2 * pad), random.randint(0, 2 * pad)
+        x = padded[:, top:top + side, left:left + side]
+
+    if random.random() < 0.3:
+        k = torch.tensor([[1.0, 2, 1], [2, 4, 2], [1, 2, 1]]) / 16.0
+        k = k.view(1, 1, 3, 3).repeat(3, 1, 1, 1)
+        x = F.conv2d(x.unsqueeze(0), k, padding=1, groups=3).squeeze(0)
+    return x
+
+
+def make_dataset(ns, arr, labels, mean, std, train: bool, crop: int = 256,
+                 heavy: bool = False):
     torch = ns["torch"]
     Dataset = ns["Dataset"]
 
     class CropDataset(Dataset):
         """Crops held on disk as a memmap, normalised on access.
 
-        Horizontal flip is the only augmentation, the same conservative choice the study
-        made and for the same reason: a flip mirrors the Fourier magnitude spectrum about
-        the vertical axis, so the fingerprint survives it, while crops and colour jitter
-        attack the signal itself.
+        Horizontal flip is the only augmentation by default, the same conservative choice
+        the study made and for the same reason: a flip mirrors the Fourier magnitude
+        spectrum about the vertical axis, so the fingerprint survives it, while crops and
+        colour jitter attack the signal itself.
+
+        `heavy=True` switches on the conventional stack instead, which exists only so that
+        ablation 7 can measure whether it helps or hurts. It mirrors the notebook's
+        `_heavy_augment`, scaled from 32px to the crop size in use.
         """
 
         def __len__(self):
@@ -108,6 +144,8 @@ def make_dataset(ns, arr, labels, mean, std, train: bool, crop: int = 256):
             if train and np.random.rand() < 0.5:
                 patch = patch[:, ::-1]
             x = torch.from_numpy(np.ascontiguousarray(patch)).permute(2, 0, 1)
+            if train and heavy:
+                x = _heavy_augment(ns, x)
             x = (x - torch.tensor(mean).view(3, 1, 1)) / torch.tensor(std).view(3, 1, 1)
             return x, torch.tensor(float(labels[i]))
 

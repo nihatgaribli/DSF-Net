@@ -40,3 +40,6 @@ demo_1024/
 results_hires_prepare.log
 hires_cache_build.log
 hires_train.log
+seed_sweep.log
+hires_ablation.log
+sweep_dry.log
