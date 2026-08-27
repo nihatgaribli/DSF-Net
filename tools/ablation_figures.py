@@ -73,7 +73,9 @@ def fig2_escalation(plt):
     # standards are directly comparable rather than merely adjacent.
     run1, run2 = +0.02, -0.49
 
-    fig, ax = plt.subplots(figsize=(6.4, 2.9))
+    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(11.0, 3.2),
+                                  gridspec_kw={"width_ratios": [1.05, 1.0]})
+
     rows = [
         ("One run\n(run 1)", run1, None),
         ("One run\n(run 2)", run2, None),
@@ -85,7 +87,7 @@ def fig2_escalation(plt):
     for y, (label, value, err) in zip(ys, rows):
         if value is None:
             ax.text(0.0, y, "sign flip: unresolved", va="center", ha="center",
-                    fontsize=9, style="italic", color=NEUTRAL)
+                    fontsize=8.5, style="italic", color=NEUTRAL)
             continue
         colour = GOOD if err is not None else NEUTRAL
         if err is None:
@@ -96,12 +98,30 @@ def fig2_escalation(plt):
     ax.axvline(0, color="#212121", lw=1, ls="--", zorder=1)
     ax.set_yticks(ys)
     ax.set_yticklabels([r[0] for r in rows])
-    ax.set_xlabel("concatenation minus gated fusion (accuracy, points)")
+    ax.set_xlabel("concatenation minus gated fusion (points)")
     ax.set_xlim(-1.0, 1.0)
-    ax.set_title("What each evidence standard said about the same architectural claim",
-                 loc="left", pad=10)
-    ax.text(0.98, 0.04, "interval spans zero:\nno effect", transform=ax.transAxes,
-            ha="right", va="bottom", fontsize=8, color=GOOD)
+    ax.set_title("(a) One claim, three evidence standards", loc="left", pad=8)
+
+    # Panel (b) generalises the left panel from one claim to every comparison the sweep
+    # supports. Plotting disagreement against effect size shows the mechanism rather than
+    # just the rates: the smaller the true effect relative to seed noise, the closer a single
+    # run gets to a coin toss.
+    risk_path = RESULTS / "single_run_risk.json"
+    if risk_path.exists():
+        risk = json.loads(risk_path.read_text(encoding="utf-8"))
+        xs = [abs(r["paired_delta_pp"]) for r in risk]
+        ys2 = [r["any_pairing_disagreement"] for r in risk]
+        cols = [NEUTRAL if not r["resolved"] else GOOD for r in risk]
+        ax2.scatter(xs, ys2, c=cols, s=34, zorder=3, edgecolors="white", linewidths=0.6)
+        ax2.axhline(0.5, color=FAKE, lw=1, ls=":", zorder=1)
+        ax2.text(max(xs) * 0.98, 0.52, "coin toss", fontsize=8, color=FAKE, ha="right")
+        ax2.set_xlabel("size of the true effect (points, five seeds)")
+        ax2.set_ylabel("single runs reporting the wrong sign")
+        ax2.set_ylim(-0.04, 0.62)
+        ax2.yaxis.set_major_formatter(lambda v, _: f"{v:.0%}")
+        ax2.set_title(f"(b) All {len(risk)} comparisons in the sweep", loc="left", pad=8)
+        ax2.text(0.98, 0.94, "grey: effect unresolved at five seeds",
+                 transform=ax2.transAxes, ha="right", va="top", fontsize=8, color=NEUTRAL)
     fig.tight_layout()
     return fig, "fig2_escalation"
 
