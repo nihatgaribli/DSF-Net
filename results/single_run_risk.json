@@ -1,0 +1,191 @@
+[
+  {
+    "a": "1. spatial only",
+    "b": "2. frequency only",
+    "paired_delta_pp": 4.695,
+    "ci_half_pp": 0.3628283703794766,
+    "resolved": true,
+    "any_pairing_disagreement": 0.0,
+    "same_seed_disagreement": 0.0
+  },
+  {
+    "a": "1. spatial only",
+    "b": "3. concat fusion",
+    "paired_delta_pp": -0.16199999999999992,
+    "ci_half_pp": 0.27904999898784955,
+    "resolved": false,
+    "any_pairing_disagreement": 0.36,
+    "same_seed_disagreement": 0.4
+  },
+  {
+    "a": "1. spatial only",
+    "b": "4. gated fusion (full)",
+    "paired_delta_pp": -0.053999999999998494,
+    "ci_half_pp": 0.441651174624334,
+    "resolved": false,
+    "any_pairing_disagreement": 0.48,
+    "same_seed_disagreement": 0.4
+  },
+  {
+    "a": "1. spatial only",
+    "b": "5. no constrained conv",
+    "paired_delta_pp": -1.1010000000000009,
+    "ci_half_pp": 0.41308427631333233,
+    "resolved": true,
+    "any_pairing_disagreement": 0.0,
+    "same_seed_disagreement": 0.0
+  },
+  {
+    "a": "1. spatial only",
+    "b": "6. no radial features",
+    "paired_delta_pp": -0.255000000000003,
+    "ci_half_pp": 0.4143326901076943,
+    "resolved": false,
+    "any_pairing_disagreement": 0.28,
+    "same_seed_disagreement": 0.2
+  },
+  {
+    "a": "1. spatial only",
+    "b": "7. heavy augmentation",
+    "paired_delta_pp": -0.9300000000000018,
+    "ci_half_pp": 0.27047192837050654,
+    "resolved": true,
+    "any_pairing_disagreement": 0.0,
+    "same_seed_disagreement": 0.0
+  },
+  {
+    "a": "2. frequency only",
+    "b": "3. concat fusion",
+    "paired_delta_pp": -4.857000000000001,
+    "ci_half_pp": 0.2284712367438624,
+    "resolved": true,
+    "any_pairing_disagreement": 0.0,
+    "same_seed_disagreement": 0.0
+  },
+  {
+    "a": "2. frequency only",
+    "b": "4. gated fusion (full)",
+    "paired_delta_pp": -4.748999999999999,
+    "ci_half_pp": 0.33188101586528235,
+    "resolved": true,
+    "any_pairing_disagreement": 0.0,
+    "same_seed_disagreement": 0.0
+  },
+  {
+    "a": "2. frequency only",
+    "b": "5. no constrained conv",
+    "paired_delta_pp": -5.796000000000001,
+    "ci_half_pp": 0.3776220522415729,
+    "resolved": true,
+    "any_pairing_disagreement": 0.0,
+    "same_seed_disagreement": 0.0
+  },
+  {
+    "a": "2. frequency only",
+    "b": "6. no radial features",
+    "paired_delta_pp": -4.950000000000003,
+    "ci_half_pp": 0.2894369117104869,
+    "resolved": true,
+    "any_pairing_disagreement": 0.0,
+    "same_seed_disagreement": 0.0
+  },
+  {
+    "a": "2. frequency only",
+    "b": "7. heavy augmentation",
+    "paired_delta_pp": -5.625000000000002,
+    "ci_half_pp": 0.33088074137590434,
+    "resolved": true,
+    "any_pairing_disagreement": 0.0,
+    "same_seed_disagreement": 0.0
+  },
+  {
+    "a": "3. concat fusion",
+    "b": "4. gated fusion (full)",
+    "paired_delta_pp": 0.10800000000000143,
+    "ci_half_pp": 0.3357260613705122,
+    "resolved": false,
+    "any_pairing_disagreement": 0.4,
+    "same_seed_disagreement": 0.2
+  },
+  {
+    "a": "3. concat fusion",
+    "b": "5. no constrained conv",
+    "paired_delta_pp": -0.939000000000001,
+    "ci_half_pp": 0.3904929636473342,
+    "resolved": true,
+    "any_pairing_disagreement": 0.0,
+    "same_seed_disagreement": 0.0
+  },
+  {
+    "a": "3. concat fusion",
+    "b": "6. no radial features",
+    "paired_delta_pp": -0.09300000000000308,
+    "ci_half_pp": 0.34618273664189064,
+    "resolved": false,
+    "any_pairing_disagreement": 0.36,
+    "same_seed_disagreement": 0.2
+  },
+  {
+    "a": "3. concat fusion",
+    "b": "7. heavy augmentation",
+    "paired_delta_pp": -0.768000000000002,
+    "ci_half_pp": 0.3037194912702833,
+    "resolved": true,
+    "any_pairing_disagreement": 0.0,
+    "same_seed_disagreement": 0.0
+  },
+  {
+    "a": "4. gated fusion (full)",
+    "b": "5. no constrained conv",
+    "paired_delta_pp": -1.0470000000000024,
+    "ci_half_pp": 0.4447428292908539,
+    "resolved": true,
+    "any_pairing_disagreement": 0.0,
+    "same_seed_disagreement": 0.0
+  },
+  {
+    "a": "4. gated fusion (full)",
+    "b": "6. no radial features",
+    "paired_delta_pp": -0.2010000000000045,
+    "ci_half_pp": 0.1270356382214322,
+    "resolved": true,
+    "any_pairing_disagreement": 0.32,
+    "same_seed_disagreement": 0.0
+  },
+  {
+    "a": "4. gated fusion (full)",
+    "b": "7. heavy augmentation",
+    "paired_delta_pp": -0.8760000000000033,
+    "ci_half_pp": 0.5015577191626162,
+    "resolved": true,
+    "any_pairing_disagreement": 0.0,
+    "same_seed_disagreement": 0.0
+  },
+  {
+    "a": "5. no constrained conv",
+    "b": "6. no radial features",
+    "paired_delta_pp": 0.845999999999998,
+    "ci_half_pp": 0.48060176553399225,
+    "resolved": true,
+    "any_pairing_disagreement": 0.0,
+    "same_seed_disagreement": 0.0
+  },
+  {
+    "a": "5. no constrained conv",
+    "b": "7. heavy augmentation",
+    "paired_delta_pp": 0.17099999999999893,
+    "ci_half_pp": 0.2231716178071989,
+    "resolved": false,
+    "any_pairing_disagreement": 0.16,
+    "same_seed_disagreement": 0.2
+  },
+  {
+    "a": "6. no radial features",
+    "b": "7. heavy augmentation",
+    "paired_delta_pp": -0.6749999999999989,
+    "ci_half_pp": 0.5029122407752846,
+    "resolved": true,
+    "any_pairing_disagreement": 0.0,
+    "same_seed_disagreement": 0.0
+  }
+]
