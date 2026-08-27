@@ -44,3 +44,5 @@ seed_sweep.log
 hires_ablation.log
 sweep_dry.log
 hires_predict_output.png
+hires_seeds.log
+crossgen32.log
