@@ -1,0 +1,73 @@
+torch      2.13.0+cu132
+numpy      2.4.4
+CUDA available: True
+GPU        NVIDIA GeForce RTX 5070 Laptop GPU
+Device: cuda | mixed precision: True
+CifakeCNN parameters: 141,345
+output shape for a 4-image batch: (4, 1)
+ResNet-18 (adapted) parameters: 11,169,345
+output shape for a 4-image batch: (4, 1)
+            variant  params output
+       gated (full)  405826 (4, 1)
+             concat  376898 (4, 1)
+       spatial only  316162 (4, 1)
+     frequency only   38401 (4, 1)
+no constrained conv  405601 (4, 1)
+ no radial features  394466 (4, 1)
+
+Constrained kernel centre taps (should all be -1): [-1.0, -1.0, -1.0]
+Sum of remaining taps per filter (should all be +1): [1.0, 1.0, 1.0]
+
+fused embedding (4, 128) | gate (4, 128) in [0.375, 0.633], per-sample std 0.052
+executed 12 tagged cells from AIGID_main.py
+
+Cross-generator probe for the 32x32 models
+==============================================================================
+  device cuda; 2 model(s): DSF-Net (tuned), CIFAKE-CNN
+
+  loading TheKernel01/Tiny-GenImage and downscaling to 32x32 ...
+    ADM            500 images
+    BigGAN         500 images
+    GLIDE          500 images
+    Midjourney     500 images
+    SD15           500 images
+    VQDM           500 images
+    Wukong         500 images
+
+=== DSF-Net (tuned) ===
+  set                                    acc     AUC   recall  specificity
+  ------------------------------------------------------------------------
+  A  CIFAKE test (in distribution)    0.9545  0.9890   0.9730       0.9360
+  C  ImageNet vs ADM                  0.4830  0.4508   0.4660       0.5000
+  C  ImageNet vs BigGAN               0.4640  0.4385   0.4280       0.5000
+  C  ImageNet vs GLIDE                0.5400  0.5341   0.5800       0.5000
+  C  ImageNet vs Midjourney           0.5470  0.5446   0.5940       0.5000
+  B  ImageNet vs SD15                 0.6940  0.7971   0.8880       0.5000
+  C  ImageNet vs VQDM                 0.4630  0.4421   0.4260       0.5000
+  C  ImageNet vs Wukong               0.7090  0.8205   0.9180       0.5000
+
+    corpus shift      B - A = -26.05 pp (same generator family, different photographs)
+    generator shift   mean over unseen generators - B = -15.97 pp
+    worst generator   VQDM at 0.4630
+
+=== CIFAKE-CNN ===
+  set                                    acc     AUC   recall  specificity
+  ------------------------------------------------------------------------
+  A  CIFAKE test (in distribution)    0.9450  0.9868   0.9500       0.9400
+  C  ImageNet vs ADM                  0.4730  0.4701   0.4100       0.5360
+  C  ImageNet vs BigGAN               0.4590  0.4402   0.3820       0.5360
+  C  ImageNet vs GLIDE                0.5190  0.5389   0.5020       0.5360
+  C  ImageNet vs Midjourney           0.5320  0.5376   0.5280       0.5360
+  B  ImageNet vs SD15                 0.7170  0.8330   0.8980       0.5360
+  C  ImageNet vs VQDM                 0.4630  0.4577   0.3900       0.5360
+  C  ImageNet vs Wukong               0.7210  0.8442   0.9060       0.5360
+
+    corpus shift      B - A = -22.80 pp (same generator family, different photographs)
+    generator shift   mean over unseen generators - B = -18.92 pp
+    worst generator   BigGAN at 0.4590
+
+written to results\crossgen_32.json
+
+Everything above is downscaled to 32x32, which removes most of the high-frequency
+evidence before the model sees it. tools/hires_crossgen.py runs the same comparison
+at native resolution, and the gap between the two is the cost of the resolution.

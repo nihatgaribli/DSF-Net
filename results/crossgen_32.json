@@ -1,0 +1,126 @@
+{
+  "DSF-Net (tuned)": {
+    "A  CIFAKE test (in distribution)": {
+      "n": 2000,
+      "accuracy": 0.9545,
+      "roc_auc": 0.9889965,
+      "recall_fake": 0.973,
+      "specificity_real": 0.936
+    },
+    "C  ImageNet vs ADM": {
+      "n": 1000,
+      "accuracy": 0.483,
+      "roc_auc": 0.450832,
+      "recall_fake": 0.466,
+      "specificity_real": 0.5
+    },
+    "C  ImageNet vs BigGAN": {
+      "n": 1000,
+      "accuracy": 0.464,
+      "roc_auc": 0.438452,
+      "recall_fake": 0.428,
+      "specificity_real": 0.5
+    },
+    "C  ImageNet vs GLIDE": {
+      "n": 1000,
+      "accuracy": 0.54,
+      "roc_auc": 0.534132,
+      "recall_fake": 0.58,
+      "specificity_real": 0.5
+    },
+    "C  ImageNet vs Midjourney": {
+      "n": 1000,
+      "accuracy": 0.547,
+      "roc_auc": 0.5446219999999999,
+      "recall_fake": 0.594,
+      "specificity_real": 0.5
+    },
+    "B  ImageNet vs SD15": {
+      "n": 1000,
+      "accuracy": 0.694,
+      "roc_auc": 0.7971,
+      "recall_fake": 0.888,
+      "specificity_real": 0.5
+    },
+    "C  ImageNet vs VQDM": {
+      "n": 1000,
+      "accuracy": 0.463,
+      "roc_auc": 0.44212799999999997,
+      "recall_fake": 0.426,
+      "specificity_real": 0.5
+    },
+    "C  ImageNet vs Wukong": {
+      "n": 1000,
+      "accuracy": 0.709,
+      "roc_auc": 0.82053,
+      "recall_fake": 0.918,
+      "specificity_real": 0.5
+    },
+    "_deltas_pp": {
+      "corpus_shift": -26.050000000000008,
+      "generator_shift": -15.96666666666665
+    }
+  },
+  "CIFAKE-CNN": {
+    "A  CIFAKE test (in distribution)": {
+      "n": 2000,
+      "accuracy": 0.945,
+      "roc_auc": 0.9867744999999999,
+      "recall_fake": 0.95,
+      "specificity_real": 0.94
+    },
+    "C  ImageNet vs ADM": {
+      "n": 1000,
+      "accuracy": 0.473,
+      "roc_auc": 0.47013199999999994,
+      "recall_fake": 0.41,
+      "specificity_real": 0.536
+    },
+    "C  ImageNet vs BigGAN": {
+      "n": 1000,
+      "accuracy": 0.459,
+      "roc_auc": 0.440184,
+      "recall_fake": 0.382,
+      "specificity_real": 0.536
+    },
+    "C  ImageNet vs GLIDE": {
+      "n": 1000,
+      "accuracy": 0.519,
+      "roc_auc": 0.538906,
+      "recall_fake": 0.502,
+      "specificity_real": 0.536
+    },
+    "C  ImageNet vs Midjourney": {
+      "n": 1000,
+      "accuracy": 0.532,
+      "roc_auc": 0.537616,
+      "recall_fake": 0.528,
+      "specificity_real": 0.536
+    },
+    "B  ImageNet vs SD15": {
+      "n": 1000,
+      "accuracy": 0.717,
+      "roc_auc": 0.832974,
+      "recall_fake": 0.898,
+      "specificity_real": 0.536
+    },
+    "C  ImageNet vs VQDM": {
+      "n": 1000,
+      "accuracy": 0.463,
+      "roc_auc": 0.457686,
+      "recall_fake": 0.39,
+      "specificity_real": 0.536
+    },
+    "C  ImageNet vs Wukong": {
+      "n": 1000,
+      "accuracy": 0.721,
+      "roc_auc": 0.84424,
+      "recall_fake": 0.906,
+      "specificity_real": 0.536
+    },
+    "_deltas_pp": {
+      "corpus_shift": -22.799999999999997,
+      "generator_shift": -18.91666666666666
+    }
+  }
+}
