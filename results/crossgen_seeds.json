@@ -1,0 +1,26 @@
+[
+  {
+    "arch": "CIFAKE-CNN",
+    "corpus_mean": -22.47,
+    "corpus_sd": 0.9699226773305176,
+    "generator_mean": -19.60333333333333,
+    "generator_sd": 0.7673366637634091,
+    "n_seeds": 5
+  },
+  {
+    "arch": "DSF-Net",
+    "corpus_mean": -23.109999999999996,
+    "corpus_sd": 2.865397005652095,
+    "generator_mean": -17.106666666666666,
+    "generator_sd": 1.711708048834393,
+    "n_seeds": 5
+  },
+  {
+    "arch": "ResNet-18",
+    "corpus_mean": -19.699999999999996,
+    "corpus_sd": 0.4730221982106136,
+    "generator_mean": -20.67333333333334,
+    "generator_sd": 0.5893263574247786,
+    "n_seeds": 5
+  }
+]
