@@ -1,0 +1,33 @@
+Can a trivial statistic separate the classes in each evaluation set?
+==========================================================================
+Logistic regression on twelve per-image summary statistics, five-fold cross
+validated. No pixel positions, no learned features, no container metadata: every
+image is already a 32x32 array, so format and dimension cues cannot survive.
+
+set                                  balanced accuracy
+--------------------------------------------------------------------------
+A: CIFAKE test (in distribution)                0.6730
+C: ImageNet vs ADM                              0.5860
+C: ImageNet vs BigGAN                           0.6330
+C: ImageNet vs GLIDE                            0.6330
+C: ImageNet vs Midjourney                       0.5900
+B: ImageNet vs SD15                             0.6180
+C: ImageNet vs VQDM                             0.7470
+C: ImageNet vs Wukong                           0.6990
+
+Highest is 0.7470 on C: ImageNet vs VQDM.
+
+What matters for the decomposition is the comparison between A and B, since their
+difference is the corpus term. Those two screen at 0.6730 and 0.6180.
+The trivial-separability gap between them is 5.50 points, against measured
+corpus terms of 19.70 to 28.71 points depending on the detector.
+
+A gap of this size is not negligible. At most a few points of the corpus term
+could be reproduced by a model reading nothing but summary statistics, so the
+majority of it is not trivially separable, but the fraction that is must be
+reported rather than assumed away.
+
+Note also the absolute levels. Both sets are partly separable by twelve statistics,
+CIFAKE at 0.6730 and the ImageNet pairing at 0.6180.
+That is a property of these benchmarks worth stating on its own: a detector reporting
+high accuracy on CIFAKE is beating a baseline well above chance, not one at 0.50.

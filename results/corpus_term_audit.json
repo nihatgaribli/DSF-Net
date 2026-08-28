@@ -1,0 +1,10 @@
+{
+  "A: CIFAKE test": 0.673,
+  "C: ImageNet vs ADM": 0.5860000000000001,
+  "C: ImageNet vs BigGAN": 0.633,
+  "C: ImageNet vs GLIDE": 0.633,
+  "C: ImageNet vs Midjourney": 0.5900000000000001,
+  "B: ImageNet vs SD15": 0.6180000000000001,
+  "C: ImageNet vs VQDM": 0.7470000000000001,
+  "C: ImageNet vs Wukong": 0.699
+}
