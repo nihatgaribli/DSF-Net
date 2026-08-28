@@ -1,0 +1,46 @@
+[
+  {
+    "arch": "CIFAKE-CNN",
+    "corpus_mean": -22.47,
+    "corpus_ci": 1.20431806948271,
+    "generator_mean": -19.60333333333333,
+    "generator_ci": 0.9527743098968121,
+    "difference_mean": 2.8666666666666707,
+    "difference_ci": 2.0734198420795047,
+    "resolved": true,
+    "n_seeds": 5
+  },
+  {
+    "arch": "DSF-Net",
+    "corpus_mean": -23.109999999999996,
+    "corpus_ci": 3.557860302479074,
+    "generator_mean": -17.106666666666666,
+    "generator_ci": 2.1253662596732763,
+    "difference_mean": 6.003333333333331,
+    "difference_ci": 5.458290693328452,
+    "resolved": true,
+    "n_seeds": 5
+  },
+  {
+    "arch": "ResNet-18",
+    "corpus_mean": -19.699999999999996,
+    "corpus_ci": 0.5873346338693238,
+    "generator_mean": -20.67333333333334,
+    "generator_ci": 0.7317453212069112,
+    "difference_mean": -0.9733333333333384,
+    "difference_ci": 0.8242244639592039,
+    "resolved": true,
+    "n_seeds": 5
+  },
+  {
+    "arch": "CLIP probe",
+    "corpus_mean": -28.709999999999997,
+    "corpus_ci": 0.6260868321708171,
+    "generator_mean": -8.610000000000003,
+    "generator_ci": 0.3345203507689807,
+    "difference_mean": 20.099999999999994,
+    "difference_ci": 0.9530664306576452,
+    "resolved": true,
+    "n_seeds": 5
+  }
+]

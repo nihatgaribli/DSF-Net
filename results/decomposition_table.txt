@@ -1,0 +1,29 @@
+The same reported drop, decomposed, for four detectors
+==============================================================================
+5 seeds each, identical evaluation sets throughout.
+A is the in-distribution reference, B changes the photographs while holding the
+generator family fixed, C changes both. All figures are percentage points.
+
+detector                size      corpus B-A     generator C-B      |corpus|-|gen|
+------------------------------------------------------------------------------
+CIFAKE-CNN              141k     -22.47            -19.60             +2.87 ok
+DSF-Net                 848k     -23.11            -17.11             +6.00 ok
+ResNet-18              11.2M     -19.70            -20.67             -0.97 ok
+CLIP probe      frozen + 513     -28.71             -8.61            +20.10 ok
+
+Intervals, 95% paired over seeds:
+  CIFAKE-CNN    corpus [ -23.67, -21.27]   generator [ -20.56, -18.65]   difference [  +0.79,  +4.94]
+  DSF-Net       corpus [ -26.67, -19.55]   generator [ -19.23, -14.98]   difference [  +0.55, +11.46]
+  ResNet-18     corpus [ -20.29, -19.11]   generator [ -21.41, -19.94]   difference [  -1.80,  -0.15]
+  CLIP probe    corpus [ -29.34, -28.08]   generator [  -8.94,  -8.28]   difference [ +19.15, +21.05]
+
+The difference between the two terms spans 21.1 points across four detectors,
+from -0.97 on ResNet-18 to +20.10 on CLIP probe, every one of them resolved.
+It changes sign. A cross-generator number is therefore not decomposable in general;
+it is decomposable only for a named detector, and reporting one without saying which
+detector produced it leaves the reader unable to attribute the loss at all.
+
+The ordering also tracks what each detector reads. The probe on frozen CLIP features
+is hurt overwhelmingly by new photographs and barely by a new generator, which is
+what a semantic representation should do. The fine-tuned ResNet-18 is the only one
+where the generator term is the larger of the two.

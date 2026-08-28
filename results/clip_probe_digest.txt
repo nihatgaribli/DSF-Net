@@ -1,0 +1,15 @@
+Frozen-CLIP linear probe: in-distribution accuracy and shift decomposition
+==============================================================================
+ViT-B-16/laion2b_s34b_b88k, encoder frozen, 5 seeds.
+CIFAKE is 32x32 and CLIP takes 224x224, so every image is upsampled sevenfold before
+encoding. This probe is therefore not reading the high-frequency evidence the
+convolutional detectors read, and its absolute accuracy is not comparable to theirs.
+
+In distribution (set A): 0.9511 mean over seeds, sd 0.0012
+
+corpus shift    B - A = -28.71 pp [-29.34, -28.08]
+generator shift C - B = -8.61 pp [-8.94, -8.28]
+|corpus| - |generator| = +20.10 pp [+19.15, +21.05], resolved
+
+Compare with the convolutional detectors, where the same quantity is +2.87 on
+CIFAKE-CNN, +6.00 on DSF-Net and -0.97 on ResNet-18, all resolved.
