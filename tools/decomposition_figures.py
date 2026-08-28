@@ -207,6 +207,35 @@ def fig_gate(plt):
     print("  fig_gate.png")
 
 
+def fig_seedspread(plt):
+    """What repetition buys: direction is stable, magnitude is not."""
+    df = load()
+    fig, ax = plt.subplots(figsize=(5.2, 2.9))
+    rng = np.random.default_rng(0)
+    ys = np.arange(len(ORDER))[::-1]
+    for y, arch in zip(ys, ORDER):
+        c, g = shifts(df, arch)
+        per = np.abs(c) - np.abs(g)
+        m, h = ci(per)
+        ax.errorbar([m], [y], xerr=[[h], [h]], fmt="|", color=GREY, ms=14,
+                    capsize=4, lw=1.4, zorder=2)
+        ax.scatter(per, y + rng.uniform(-0.09, 0.09, len(per)), s=30,
+                   color=INK, zorder=3, alpha=0.85)
+        ax.annotate(f"x{max(per)/max(min(per), 1e-9):.1f}" if min(per) > 0 else "",
+                    (max(per) + 0.9, y), fontsize=7.5, va="center", color=GREY)
+    ax.axvline(0, color=INK, lw=1.1, ls="--", zorder=1)
+    ax.set_yticks(ys)
+    ax.set_yticklabels(ORDER)
+    ax.set_ylim(-0.7, len(ORDER) - 0.3)
+    ax.set_xlabel(r"$|$corpus$| - |$generator$|$ per seed (points)")
+    ax.text(0.99, 0.04, "bars: 95% interval over seeds", transform=ax.transAxes,
+            ha="right", va="bottom", fontsize=7.5, color=GREY)
+    fig.tight_layout()
+    fig.savefig(OUT / "fig_seedspread.png")
+    plt.close(fig)
+    print("  fig_seedspread.png")
+
+
 def main() -> None:
     import matplotlib
     matplotlib.use("Agg")
@@ -218,6 +247,7 @@ def main() -> None:
     fig_decomposition(plt)
     fig_transfer(plt)
     fig_gate(plt)
+    fig_seedspread(plt)
 
 
 if __name__ == "__main__":
