@@ -32,6 +32,7 @@ hires_predict_output.png
 hires_seeds.log
 hires_train.log
 paper/build/
+paper/package/_test/
 presentation/preview/
 results/**/*.tmp
 results/_quick_check/
