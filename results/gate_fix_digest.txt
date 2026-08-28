@@ -1,0 +1,21 @@
+The corrected fusion gate over five seeds
+==========================================================================
+5 runs. Correction: LayerNorm without affine on each branch before mixing.
+
+  seed   test acc   gate clean   gate q30    travel
+--------------------------------------------------------------------------
+    42     0.9565       0.5297     0.5067   -0.0230
+    43     0.9554       0.4727     0.4634   -0.0093
+    44     0.9631       0.4923     0.4623   -0.0300
+    45     0.9615       0.5122     0.4693   -0.0429
+    46     0.9563       0.5291     0.4977   -0.0314
+
+Mean absolute gate travel, clean to JPEG q30: 0.0273
+The original gate travelled 0.0060 in run 1 and 0.0015 in run 2, and the two
+disagreed about the sign. A correction that works should exceed that clearly.
+Verdict on identifiability: readable.
+
+Cost of the correction, paired against the original gate on 5 seeds:
+  +0.31 pp, 95% CI [-0.07, +0.68], unresolved
+  The correction is free at this sample size: it buys identifiability
+  without a measurable change in accuracy.

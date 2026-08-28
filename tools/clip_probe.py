@@ -81,8 +81,11 @@ def extract_features(device):
     def encode(images_u8, tag):
         out = []
         with torch.no_grad():
-            for i in range(0, len(images_u8), 256):
-                part = images_u8[i:i + 256].astype(np.float32) / 255.0
+            # 128 rather than 256: ViT-B/16 sees 196 patches per image against B/32's 49,
+            # and this runs unattended, where a slower pass beats an out-of-memory crash
+            # twenty minutes in.
+            for i in range(0, len(images_u8), 128):
+                part = images_u8[i:i + 128].astype(np.float32) / 255.0
                 x = torch.from_numpy(part).permute(0, 3, 1, 2).to(device)
                 x = torch.nn.functional.interpolate(
                     x, size=224, mode="bicubic", align_corners=False, antialias=False)
