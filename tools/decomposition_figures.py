@@ -236,6 +236,64 @@ def fig_seedspread(plt):
     print("  fig_seedspread.png")
 
 
+def fig_geometry(plt):
+    """Why the decompositions differ: what each representation is organised by."""
+    from sklearn.decomposition import PCA
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.model_selection import cross_val_score
+    from sklearn.pipeline import make_pipeline
+    from sklearn.preprocessing import StandardScaler
+
+    emb = ROOT / "data" / "dsfnet_embeddings.npz"
+    clipf = ROOT / "data" / "clip_features.npz"
+    if not (emb.exists() and clipf.exists()):
+        print("  fig_geometry.png skipped: embeddings not built")
+        return
+    d, c = np.load(emb), np.load(clipf)
+
+    def probe(X, y):
+        clf = make_pipeline(StandardScaler(), LogisticRegression(max_iter=3000))
+        return cross_val_score(clf, X, y, cv=5, scoring="balanced_accuracy").mean()
+
+    spaces = [("DSF-Net fused embedding", lambda k: d[f"s42_{k}"]),
+              ("Frozen CLIP features", lambda k: c[k])]
+    groups = [("A_real", "CIFAR-10 photographs", CORPUS_C, "o"),
+              ("A_fake", "SD 1.4 generated", CORPUS_C, "^"),
+              ("imagenet_real", "ImageNet photographs", GEN_C, "o"),
+              ("gen_SD15", "SD 1.5 generated", GEN_C, "^")]
+
+    fig, axes = plt.subplots(1, 2, figsize=(7.0, 3.1))
+    for ax, (title, get) in zip(axes, spaces):
+        X = np.concatenate([get(k) for k, *_ in groups])
+        Z = PCA(n_components=2, random_state=0).fit_transform(
+            StandardScaler().fit_transform(X))
+        i = 0
+        for key, label, colour, marker in groups:
+            n = len(get(key))
+            ax.scatter(Z[i:i+n, 0], Z[i:i+n, 1], s=5, c=colour, marker=marker,
+                       alpha=0.45, linewidths=0, label=label)
+            i += n
+        corpus = probe(np.concatenate([get("A_real"), get("imagenet_real")]),
+                       np.concatenate([np.zeros(len(get("A_real"))),
+                                       np.ones(len(get("imagenet_real")))]))
+        klass = probe(np.concatenate([get("A_real"), get("A_fake")]),
+                      np.concatenate([np.zeros(len(get("A_real"))),
+                                      np.ones(len(get("A_fake")))]))
+        ax.set_title(title, loc="left", fontsize=8.5, pad=6)
+        note = f"corpus {corpus:.3f}" + chr(10) + f"class  {klass:.3f}"
+        ax.text(0.03, 0.965, note,
+                transform=ax.transAxes, fontsize=7.5, va="top", family="monospace")
+        ax.set_xticks([]); ax.set_yticks([])
+        for side in ("left", "bottom"):
+            ax.spines[side].set_visible(False)
+    axes[0].legend(loc="upper center", bbox_to_anchor=(1.05, -0.03), ncol=4,
+                   fontsize=7.5, markerscale=2.2, handletextpad=0.3, columnspacing=1.1)
+    fig.subplots_adjust(bottom=0.17, wspace=0.08)
+    fig.savefig(OUT / "fig_geometry.png", bbox_inches="tight")
+    plt.close(fig)
+    print("  fig_geometry.png")
+
+
 def main() -> None:
     import matplotlib
     matplotlib.use("Agg")
@@ -248,6 +306,7 @@ def main() -> None:
     fig_transfer(plt)
     fig_gate(plt)
     fig_seedspread(plt)
+    fig_geometry(plt)
 
 
 if __name__ == "__main__":
