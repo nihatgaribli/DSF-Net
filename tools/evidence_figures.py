@@ -189,6 +189,37 @@ def fig_forest(plt):
     print("  fig_forest.png")
 
 
+def fig_risk(plt):
+    """Single-run disagreement against effect size, over all 21 comparisons.
+
+    This replaces the two-panel escalation figure. Its left panel plotted the four numbers of
+    the escalation table and nothing else; this is the part that is not already a table.
+    """
+    import json
+
+    risk = json.loads((RESULTS / "single_run_risk.json").read_text(encoding="utf-8"))
+    xs = [abs(r["paired_delta_pp"]) for r in risk]
+    ys = [r["any_pairing_disagreement"] for r in risk]
+    cols = [GOOD if r["resolved"] else GREY for r in risk]
+
+    fig, ax = plt.subplots(figsize=(4.8, 2.9))
+    ax.scatter(xs, ys, c=cols, s=40, zorder=3, edgecolors="white", linewidths=0.7)
+    ax.axhline(0.5, color=FAKE, lw=1.1, ls=":", zorder=1)
+    ax.text(max(xs) * 0.99, 0.52, "coin toss", fontsize=8, color=FAKE, ha="right")
+    ax.axvline(0.5, color=INK, lw=0.9, ls="--", zorder=1)
+    ax.text(0.56, 0.30, "floor", fontsize=8, color=INK)
+    ax.set_xlabel(r"size of the paired effect $|\bar{\delta}^{(uv)}|$ (points)")
+    ax.set_ylabel(r"$R_{\mathrm{any}}$")
+    ax.set_ylim(-0.04, 0.62)
+    ax.yaxis.set_major_formatter(lambda v, _: f"{v:.0%}")
+    ax.text(0.99, 0.94, "grey: unresolved at five seeds", transform=ax.transAxes,
+            ha="right", va="top", fontsize=7.5, color=GREY)
+    fig.tight_layout()
+    fig.savefig(OUT / "fig_risk.png")
+    plt.close(fig)
+    print("  fig_risk.png")
+
+
 def main() -> None:
     import matplotlib
     matplotlib.use("Agg")
@@ -199,6 +230,7 @@ def main() -> None:
     fig_data(plt)
     fig_spread(plt)
     fig_forest(plt)
+    fig_risk(plt)
 
 
 if __name__ == "__main__":
