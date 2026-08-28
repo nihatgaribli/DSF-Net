@@ -1,0 +1,19 @@
+256px architecture comparison across seeds [np.int64(42), np.int64(43), np.int64(44), np.int64(45), np.int64(46)]
+
+variant                   mean acc      std   n    mean BigGAN
+--------------------------------------------------------------
+1. spatial only             0.9590   0.0019   5         0.6310
+3. concat fusion            0.9515   0.0027   5         0.4120
+4. gated fusion (full)      0.9527   0.0032   5         0.4836
+
+Paired against '4. gated fusion (full)', same seeds throughout:
+
+variant                   delta pp              95% CI        p
+----------------------------------------------------------------
+1. spatial only              +0.62      [+0.26, +0.99]   0.0093
+3. concat fusion             -0.13      [-0.44, +0.19]   0.3231
+
+Frequency-only is not in this table. Its single-seed effect is -9.88 pp, an order of
+magnitude above any plausible run-to-run noise, so repeating it would not change how
+it is read. The same applies in reverse to the two component-removal variants, whose
+32x32 five-seed intervals were +0.23 and +0.06 pp.
