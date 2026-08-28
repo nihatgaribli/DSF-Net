@@ -1,0 +1,191 @@
+[
+  {
+    "generator": "SD15",
+    "arch": "CIFAKE-CNN",
+    "mean_auc": 0.8343879999999999,
+    "ci_half": 0.004831554423574125,
+    "resolved_below_chance": false,
+    "resolved_above_chance": true,
+    "family": true
+  },
+  {
+    "generator": "SD15",
+    "arch": "DSF-Net",
+    "mean_auc": 0.82136,
+    "ci_half": 0.016520466088416726,
+    "resolved_below_chance": false,
+    "resolved_above_chance": true,
+    "family": true
+  },
+  {
+    "generator": "SD15",
+    "arch": "ResNet-18",
+    "mean_auc": 0.8565251999999999,
+    "ci_half": 0.008470057465724422,
+    "resolved_below_chance": false,
+    "resolved_above_chance": true,
+    "family": true
+  },
+  {
+    "generator": "Wukong",
+    "arch": "CIFAKE-CNN",
+    "mean_auc": 0.8526095999999999,
+    "ci_half": 0.004313793201199176,
+    "resolved_below_chance": false,
+    "resolved_above_chance": true,
+    "family": true
+  },
+  {
+    "generator": "Wukong",
+    "arch": "DSF-Net",
+    "mean_auc": 0.8269752,
+    "ci_half": 0.01605531899367347,
+    "resolved_below_chance": false,
+    "resolved_above_chance": true,
+    "family": true
+  },
+  {
+    "generator": "Wukong",
+    "arch": "ResNet-18",
+    "mean_auc": 0.8610863999999999,
+    "ci_half": 0.008717345330730802,
+    "resolved_below_chance": false,
+    "resolved_above_chance": true,
+    "family": true
+  },
+  {
+    "generator": "ADM",
+    "arch": "CIFAKE-CNN",
+    "mean_auc": 0.46411759999999996,
+    "ci_half": 0.005355888374087701,
+    "resolved_below_chance": true,
+    "resolved_above_chance": false,
+    "family": false
+  },
+  {
+    "generator": "ADM",
+    "arch": "DSF-Net",
+    "mean_auc": 0.5012823999999999,
+    "ci_half": 0.011021665908652984,
+    "resolved_below_chance": false,
+    "resolved_above_chance": false,
+    "family": false
+  },
+  {
+    "generator": "ADM",
+    "arch": "ResNet-18",
+    "mean_auc": 0.5006128000000001,
+    "ci_half": 0.011186340343329434,
+    "resolved_below_chance": false,
+    "resolved_above_chance": false,
+    "family": false
+  },
+  {
+    "generator": "BigGAN",
+    "arch": "CIFAKE-CNN",
+    "mean_auc": 0.4387308,
+    "ci_half": 0.014304910888182334,
+    "resolved_below_chance": true,
+    "resolved_above_chance": false,
+    "family": false
+  },
+  {
+    "generator": "BigGAN",
+    "arch": "DSF-Net",
+    "mean_auc": 0.4743448,
+    "ci_half": 0.030259394567097392,
+    "resolved_below_chance": false,
+    "resolved_above_chance": false,
+    "family": false
+  },
+  {
+    "generator": "BigGAN",
+    "arch": "ResNet-18",
+    "mean_auc": 0.49362439999999996,
+    "ci_half": 0.013289545770659791,
+    "resolved_below_chance": false,
+    "resolved_above_chance": false,
+    "family": false
+  },
+  {
+    "generator": "GLIDE",
+    "arch": "CIFAKE-CNN",
+    "mean_auc": 0.5336068,
+    "ci_half": 0.004238740683143615,
+    "resolved_below_chance": false,
+    "resolved_above_chance": true,
+    "family": false
+  },
+  {
+    "generator": "GLIDE",
+    "arch": "DSF-Net",
+    "mean_auc": 0.5473964,
+    "ci_half": 0.027366209417478905,
+    "resolved_below_chance": false,
+    "resolved_above_chance": true,
+    "family": false
+  },
+  {
+    "generator": "GLIDE",
+    "arch": "ResNet-18",
+    "mean_auc": 0.5911784,
+    "ci_half": 0.023941114261424014,
+    "resolved_below_chance": false,
+    "resolved_above_chance": true,
+    "family": false
+  },
+  {
+    "generator": "Midjourney",
+    "arch": "CIFAKE-CNN",
+    "mean_auc": 0.5294764,
+    "ci_half": 0.0076549489592549905,
+    "resolved_below_chance": false,
+    "resolved_above_chance": true,
+    "family": false
+  },
+  {
+    "generator": "Midjourney",
+    "arch": "DSF-Net",
+    "mean_auc": 0.5623511999999999,
+    "ci_half": 0.02189187148363533,
+    "resolved_below_chance": false,
+    "resolved_above_chance": true,
+    "family": false
+  },
+  {
+    "generator": "Midjourney",
+    "arch": "ResNet-18",
+    "mean_auc": 0.5874072,
+    "ci_half": 0.027194875714139324,
+    "resolved_below_chance": false,
+    "resolved_above_chance": true,
+    "family": false
+  },
+  {
+    "generator": "VQDM",
+    "arch": "CIFAKE-CNN",
+    "mean_auc": 0.4547932,
+    "ci_half": 0.011930099034559945,
+    "resolved_below_chance": true,
+    "resolved_above_chance": false,
+    "family": false
+  },
+  {
+    "generator": "VQDM",
+    "arch": "DSF-Net",
+    "mean_auc": 0.5219868,
+    "ci_half": 0.02749302028607659,
+    "resolved_below_chance": false,
+    "resolved_above_chance": false,
+    "family": false
+  },
+  {
+    "generator": "VQDM",
+    "arch": "ResNet-18",
+    "mean_auc": 0.5335552,
+    "ci_half": 0.026971061281510944,
+    "resolved_below_chance": false,
+    "resolved_above_chance": true,
+    "family": false
+  }
+]

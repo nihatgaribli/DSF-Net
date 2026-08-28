@@ -1,0 +1,29 @@
+Per-generator transfer over five seeds and three architectures
+==============================================================================
+ROC-AUC, mean over five seeds with a 95% interval. Chance is 0.500.
+An interval that spans 0.5 is unresolved, not below chance.
+
+generator               CIFAKE-CNN               DSF-Net             ResNet-18
+------------------------------------------------------------------------------
+SD15 *            0.834 +/-0.005 +      0.821 +/-0.017 +      0.857 +/-0.008 +
+Wukong *          0.853 +/-0.004 +      0.827 +/-0.016 +      0.861 +/-0.009 +
+ADM               0.464 +/-0.005 -      0.501 +/-0.011        0.501 +/-0.011  
+BigGAN            0.439 +/-0.014 -      0.474 +/-0.030        0.494 +/-0.013  
+GLIDE             0.534 +/-0.004 +      0.547 +/-0.027 +      0.591 +/-0.024 +
+Midjourney        0.529 +/-0.008 +      0.562 +/-0.022 +      0.587 +/-0.027 +
+VQDM              0.455 +/-0.012 -      0.522 +/-0.027        0.534 +/-0.027 +
+
+* Stable Diffusion family. Models were trained on SD 1.4.
++ interval entirely above chance    - interval entirely below chance
+
+Family members (6 cells): 6 resolved above chance, mean AUC 0.842.
+Other generators (15 cells): 7 resolved above chance, 3 resolved below chance, 5 unresolved. Mean AUC 0.516.
+
+Resolved below chance, meaning the detector ranks generated images as more
+camera-like than photographs, and does so consistently across seeds:
+    CIFAKE-CNN   vs BigGAN      AUC 0.439 +/- 0.014
+    CIFAKE-CNN   vs VQDM        AUC 0.455 +/- 0.012
+    CIFAKE-CNN   vs ADM         AUC 0.464 +/- 0.005
+
+The single-run version of this table reported three generators below 0.5 for
+DSF-Net. Repetition is what decides whether that was a finding or a coin toss.
