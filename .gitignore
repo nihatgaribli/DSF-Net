@@ -1,43 +1,47 @@
+# Order matters in this file: a negation only works after the pattern it exempts from.
+# Do not sort it.
 
-# Cached dataset arrays and downloaded data
-# Editor / OS
-# Generated outputs are kept, but not the large intermediates
-# Live demo output
-# Quick-mode wiring checks (meaningless numbers, never part of the study)
-# Scratch
-# Slide preview PNGs: regenerable from the .pptx, and they go stale on every edit
-# Synthetic 1024x1024 demonstration inputs and output
-# Trained weights
-*.log.tmp
-*.npy
-*.npz
+# Trained weights and cached arrays. Large, regenerable, and the numbers they produce are
+# committed under results/ instead.
+checkpoints/
+data/
 *.pt
 *.pth
-*.pyc
-.DS_Store
-.ipynb_checkpoints/
-.vscode/
-Thumbs.db
-__pycache__/
-benchmark_audit.log
-checkpoints/
+*.npy
+*.npz
+
+# Run logs. The three that are tracked are evidence: run.log and run2.log are the two full
+# executions of the study whose disagreement the evidence-standard analysis is built on, and crossgen32.log
+# is the original single-run cross-generator probe.
+*.log
+*.log.tmp
+!run.log
+!run2.log
+!crossgen32.log
+
+# Scratch and quick-mode wiring checks, whose numbers are meaningless by construction
+results/_sweep_scratch/
+results/_quick_check/
+results/**/*.tmp
 checkpoints/seeds_quick/
-crossgen32.log
-data/
-demo_1024/
-demo_output.png
-hires_ablation.log
-hires_cache_build.log
-hires_predict_output.png
-hires_seeds.log
-hires_train.log
+
+# Build output
 paper/build/
 paper/package/_test/
-presentation/preview/
-results/**/*.tmp
-results/_quick_check/
-results/_sweep_scratch/
-results_hires_prepare.log
-seed_sweep.log
-sweep_dry.log
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Live demo output and its synthetic 1024x1024 inputs
+demo_output.png
+demo_1024/
+hires_predict_output.png
 try_image_output.png
+
+# Slide previews: regenerable from the .pptx and stale after every edit
+presentation/preview/
+
+# Editor and OS
+.vscode/
+.DS_Store
+Thumbs.db
