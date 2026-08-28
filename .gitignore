@@ -1,49 +1,42 @@
-__pycache__/
-*.pyc
-.ipynb_checkpoints/
 
 # Cached dataset arrays and downloaded data
-data/
+# Editor / OS
+# Generated outputs are kept, but not the large intermediates
+# Live demo output
+# Quick-mode wiring checks (meaningless numbers, never part of the study)
+# Scratch
+# Slide preview PNGs: regenerable from the .pptx, and they go stale on every edit
+# Synthetic 1024x1024 demonstration inputs and output
+# Trained weights
+*.log.tmp
 *.npy
 *.npz
-
-# Trained weights
-checkpoints/
 *.pt
 *.pth
-
-# Generated outputs are kept, but not the large intermediates
-results/**/*.tmp
-
-# Editor / OS
-.vscode/
+*.pyc
 .DS_Store
+.ipynb_checkpoints/
+.vscode/
 Thumbs.db
-
-# Scratch
-*.log.tmp
-
-# Slide preview PNGs: regenerable from the .pptx, and they go stale on every edit
-presentation/preview/
-
-# Live demo output
-demo_output.png
-
-# Quick-mode wiring checks (meaningless numbers, never part of the study)
-results/_quick_check/
+__pycache__/
+benchmark_audit.log
+checkpoints/
 checkpoints/seeds_quick/
-results/_sweep_scratch/
-try_image_output.png
-
-# Synthetic 1024x1024 demonstration inputs and output
+crossgen32.log
+data/
 demo_1024/
-results_hires_prepare.log
-hires_cache_build.log
-hires_train.log
-seed_sweep.log
+demo_output.png
 hires_ablation.log
-sweep_dry.log
+hires_cache_build.log
 hires_predict_output.png
 hires_seeds.log
-crossgen32.log
-benchmark_audit.log
+hires_train.log
+paper/build/
+presentation/preview/
+results/**/*.tmp
+results/_quick_check/
+results/_sweep_scratch/
+results_hires_prepare.log
+seed_sweep.log
+sweep_dry.log
+try_image_output.png
