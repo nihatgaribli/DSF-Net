@@ -1,0 +1,25 @@
+Seed variance across three architectures
+==============================================================================
+3 architectures, 15 trained models
+
+architecture          params  seeds   mean acc   sd (pp)  range (pp)
+------------------------------------------------------------------------------
+CIFAKE-CNN           141,345      5     94.81%     0.104       0.270
+DSF-Net (tuned)      848,066      5     95.55%     0.364       0.900
+ResNet-18         11,169,345      5     97.49%     0.530       1.160
+
+The seed-to-seed spread is not a property of DSF-Net. ResNet-18 varies most (0.530 pp) and
+CIFAKE-CNN least (0.104 pp), a factor of 5.1 across the 3. Any architectural delta
+smaller than this spread is unmeasurable from a single run whatever the model.
+
+How often a single run disagrees with the five-seed verdict
+------------------------------------------------------------------------------
+comparison                           paired   CI half     any    same  resolved
+------------------------------------------------------------------------------
+CIFAKE-CNN vs DSF-Net (tuned)         -0.74      0.41      0%      0%       yes
+CIFAKE-CNN vs ResNet-18               -2.68      0.54      0%      0%       yes
+DSF-Net (tuned) vs ResNet-18          -1.94      0.61      0%      0%       yes
+
+3 of 3 architecture comparisons are resolved at five seeds.
+The smallest resolved effect is 0.74 pp (CIFAKE-CNN vs DSF-Net (tuned)), which is consistent with the half-point floor
+the within-architecture analysis found.

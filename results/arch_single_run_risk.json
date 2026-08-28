@@ -1,0 +1,32 @@
+[
+  {
+    "a": "CIFAKE-CNN",
+    "b": "DSF-Net (tuned)",
+    "paired_delta_pp": -0.7399999999999962,
+    "ci_half_pp": 0.40909013131027555,
+    "resolved": true,
+    "any_pairing_disagreement": 0.0,
+    "same_seed_disagreement": 0.0,
+    "n_seeds": 5
+  },
+  {
+    "a": "CIFAKE-CNN",
+    "b": "ResNet-18",
+    "paired_delta_pp": -2.679999999999998,
+    "ci_half_pp": 0.5443886021451805,
+    "resolved": true,
+    "any_pairing_disagreement": 0.0,
+    "same_seed_disagreement": 0.0,
+    "n_seeds": 5
+  },
+  {
+    "a": "DSF-Net (tuned)",
+    "b": "ResNet-18",
+    "paired_delta_pp": -1.940000000000002,
+    "ci_half_pp": 0.6107232642711627,
+    "resolved": true,
+    "any_pairing_disagreement": 0.0,
+    "same_seed_disagreement": 0.0,
+    "n_seeds": 5
+  }
+]
