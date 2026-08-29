@@ -11,14 +11,13 @@ turned out to be wrong.**
 ![Replication](https://img.shields.io/badge/study%20run-twice%20end--to--end-purple)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
-Deep Learning course final project by **Nihat Garibli**.
+By **Nihat Garibli**.
 
 | | |
 | --- | --- |
-| Written report | [`report/report.md`](report/report.md) |
-| Project proposal | [`report/proposal.md`](report/proposal.md) |
 | Runnable notebook | [`notebooks/AIGID_main.ipynb`](notebooks/AIGID_main.ipynb) |
-| Slides and video script | [`presentation/`](presentation/) |
+| Model and training code | [`src/`](src/) |
+| Analysis and figure scripts | [`tools/`](tools/) |
 | Numbers behind every claim | [`results/`](results/) |
 
 ---
@@ -104,8 +103,9 @@ The entire study was run twice from scratch. That is what makes the table below 
 
 Three of the project's own design arguments were wrong, and the central claim, that gating beats
 concatenation, **does not replicate**. A single run would have shown gating winning by half a point
-and looked entirely convincing. [`report/report.md`](report/report.md) sections 6.3 and 7.3 work
-through why, including a structural reason the gate could never have been interpretable as built.
+and looked entirely convincing. The seed sweep in [`tools/seed_sweep.py`](tools/seed_sweep.py)
+and the tables in [`results/`](results/) are where that is measured, including a structural
+reason the gate could never have been interpretable as built.
 
 ![Seven-way ablation against the measured noise floor](results/figures/08_ablation.png)
 
@@ -134,13 +134,6 @@ tools/
   smoke_test.py                     <- runs the model/training code on synthetic data, no dataset needed
   pipeline_test.py                  <- runs EVERY notebook cell end to end on synthetic data
   run_notebook.py                   <- headless execution helper
-report/
-  proposal.md                       <- project proposal
-  report.md                         <- written report; numbers come from results/digest.txt
-presentation/
-  DSF-Net_presentation.pptx         <- slide deck
-  script.md                         <- word-for-word 10-15 min video script with timings
-  slides.md                         <- slide-by-slide deck outline
 results/                            <- metrics.csv, ablations.csv, robustness.csv, tuning.csv,
                                        digest.txt, run1_digest.txt, figures/
 run.log, run2.log                   <- console logs of the two full study runs
@@ -304,7 +297,7 @@ Bird, J. J., & Lotfi, A. (2024). *CIFAKE: Image Classification and Explainable I
 AI-Generated Synthetic Images.* IEEE Access, 12, 15642-15650. Reports **92.98%** accuracy on this
 dataset, the reference number the notebook compares against.
 
-Full reference list in the notebook's final section and in [`report/report.md`](report/report.md).
+Full reference list in the notebook's final section.
 
 ## License
 

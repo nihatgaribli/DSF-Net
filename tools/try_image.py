@@ -249,7 +249,7 @@ def main() -> None:
 
     print()
     print("  Bottom line: on inputs like these the model is close to guessing. The honest")
-    print("  demonstration is the failure itself, which is limitation 2 in report/report.md.")
+    print("  demonstration is the failure itself, and it is the honest result.")
 
 
 if __name__ == "__main__":

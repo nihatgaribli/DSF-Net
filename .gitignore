@@ -46,3 +46,20 @@ presentation/preview/
 .DS_Store
 Thumbs.db
 paper/paper2/build/
+
+# Manuscripts, coursework and submission material are deliberately not published here.
+# This repository is what the papers' data availability statements point at: the code, the
+# result tables every number is computed from, and the scripts that regenerate every figure.
+# It is not the place for working directories.
+# Do not sort this file; the groups are meaningful and !negations must follow their patterns.
+paper/
+report/
+presentation/
+paper.pdf
+.claude/
+tools/assemble_submission.py
+tools/assemble_submission2.py
+tools/form_fields.py
+tools/graphical_abstract.py
+tools/graphical_abstract2.py
+tools/overlap_check.py
