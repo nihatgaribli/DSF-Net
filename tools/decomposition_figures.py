@@ -28,6 +28,7 @@ CORPUS_C = "#1565c0"
 GEN_C = "#c62828"
 INK = "#1a1a1a"
 GREY = "#6b7280"
+NL = chr(10)
 GOOD = "#2e7d32"
 FAMILY = {"SD15", "Wukong"}
 
@@ -294,6 +295,64 @@ def fig_geometry(plt):
     print("  fig_geometry.png")
 
 
+
+
+def fig_grid(plt):
+    """Every detector on every evaluation set, so nothing is aggregated out of sight."""
+    df = load()
+    gens = sorted({k[4:] for k in df["set"].unique() if k.startswith("gen_")},
+                  key=lambda g: (g not in FAMILY, g))
+    cols = ["A"] + [f"gen_{g}" for g in gens]
+    labels = ["A" + NL + "CIFAKE"] + [("B" if g == "SD15" else "C") + NL + g for g in gens]
+
+    acc = np.zeros((len(ORDER), len(cols)))
+    err = np.zeros_like(acc)
+    auc = np.zeros_like(acc)
+    for i, arch in enumerate(ORDER):
+        for j, c in enumerate(cols):
+            sub = df[(df["arch"] == arch) & (df["set"] == c)]
+            acc[i, j], err[i, j] = ci(sub["accuracy"].to_numpy())
+            auc[i, j] = sub["roc_auc"].mean()
+
+    fig, ax = plt.subplots(figsize=(7.1, 2.95))
+    im = ax.imshow(acc, cmap="RdYlGn", vmin=0.40, vmax=1.0, aspect="auto")
+    for i in range(len(ORDER)):
+        for j in range(len(cols)):
+            shade = INK if 0.52 < acc[i, j] < 0.90 else "white"
+            ax.text(j, i - 0.15, f"{acc[i, j]:.3f}", ha="center", va="center",
+                    fontsize=7.6, color=shade)
+            ax.text(j, i + 0.20, f"+/-{err[i, j]:.3f}   {auc[i, j]:.3f}", ha="center",
+                    va="center", fontsize=5.7, color=shade)
+    ax.set_xticks(range(len(cols)))
+    ax.set_xticklabels(labels, fontsize=7.6)
+    ax.set_yticks(range(len(ORDER)))
+    ax.set_yticklabels(ORDER, fontsize=8.5)
+    ax.set_xticks(np.arange(-0.5, len(cols)), minor=True)
+    ax.set_yticks(np.arange(-0.5, len(ORDER)), minor=True)
+    ax.grid(which="minor", color="white", lw=1.5)
+    ax.tick_params(which="minor", length=0)
+    ax.tick_params(length=0)
+    cb = fig.colorbar(im, ax=ax, fraction=0.020, pad=0.012)
+    cb.set_label("accuracy", fontsize=8)
+    cb.ax.tick_params(labelsize=7)
+    # The two Stable Diffusion relatives are what section 6.3 calls the family, and the
+    # argument there is about family versus non-family, so mark them rather than make the
+    # reader match generator names against the text.
+    fam = [j for j, g in enumerate(gens, start=1) if g in FAMILY]
+    ax.plot([min(fam) - 0.42, max(fam) + 0.42], [-0.62, -0.62], color=INK, lw=1.1,
+            clip_on=False)
+    ax.text(np.mean(fam), -0.78, "training generator and its relative", ha="center",
+            va="bottom", fontsize=7, color=INK)
+    ax.text((max(fam) + 1 + len(cols) - 1) / 2, -0.78, "unrelated generators", ha="center",
+            va="bottom", fontsize=7, color=GREY)
+    ax.set_title("upper number: accuracy.  lower: 95% half-interval over five seeds, "
+                 "then mean ROC-AUC", fontsize=7.4, color=GREY, pad=22, loc="left")
+    fig.tight_layout()
+    fig.savefig(OUT / "fig_grid.png")
+    plt.close(fig)
+    print("  fig_grid.png")
+
+
 def main() -> None:
     import matplotlib
     matplotlib.use("Agg")
@@ -307,6 +366,7 @@ def main() -> None:
     fig_gate(plt)
     fig_seedspread(plt)
     fig_geometry(plt)
+    fig_grid(plt)
 
 
 if __name__ == "__main__":

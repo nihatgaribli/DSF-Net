@@ -1,0 +1,35 @@
+What do the 4 nearest neighbours of an image share with it?
+==========================================================================
+Every image of the five pooled evaluation sets, 4,000 in total, by cosine distance in
+each representation. A neighbour is never the query itself. Chance is the rate a
+randomly drawn neighbour would achieve given the set sizes, which is well above zero.
+
+Corpus and generator are separated deliberately. Asking only whether a neighbour comes
+from the query's own evaluation set confounds the two: the CIFAKE sets differ from the
+ImageNet sets in subject matter as well as in origin, so a representation reading pure
+content would score high on that question for the wrong reason. The third column asks
+the question that is not confounded, restricted to the three ImageNet-based sets, which
+share their photographic content and differ only in which generator produced them.
+
+representation         same corpus   same class   same generator
+--------------------------------------------------------------------------
+chance                       0.500        0.500            0.375
+frozen CLIP                  0.965        0.701            0.482
+DSF-Net fused                0.732        0.736            0.500
+
+The third column is the one that carries the mechanism claim. Within the ImageNet
+corpus, where every set shows the same kind of photograph and the only thing that
+changes is the generator, chance is 0.375.
+
+  frozen CLIP      generator agreement 0.482, which is +0.108 against chance
+  DSF-Net fused    generator agreement 0.500, which is +0.126 against chance
+
+DSF-Net fused groups images by their generator more strongly than frozen CLIP does.
+
+Read the first column against the third. Both representations put same-corpus
+images together far above chance, but that column cannot distinguish a space
+organised by origin from one organised by subject matter, because in these data
+the two travel together. The third column separates them, and it is much closer
+to chance for both, which is the honest form of the claim: neither representation
+groups images by generator anywhere near as strongly as the raw set-membership
+number would suggest.
