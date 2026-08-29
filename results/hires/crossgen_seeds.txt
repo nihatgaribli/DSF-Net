@@ -1,0 +1,33 @@
+The decomposition at 256x256, resolution against generator
+==========================================================================
+A 256px real vs seen generators. B the same images cropped to 128px. C 128px real
+vs BigGAN, never seen in training. B - A is the resolution term, C - B the generator
+term. The real photographs are identical across all three sets.
+
+detector      seeds   resolution   95% half   generator   95% half  |res|-|gen|
+--------------------------------------------------------------------------
+dsfnet            5        -9.59       1.07      -18.01       8.37        -8.42
+resnet18          1       -14.90        nan      -21.55        nan        -6.65
+
+For DSF-Net over 5 seeds the generator term is the larger, by 8.42 points
+with a 95 per cent half-interval of 8.50, so the ordering is not resolved.
+
+What is resolved here is the asymmetry between the two terms rather than their
+ordering. The resolution term is small and tight, and the generator term is twice
+as large and five times as variable across seeds, which is the same instability
+the 32x32 track reports for the magnitude of its split.
+
+The point estimate does reverse. At 32x32 DSF-Net's corpus term is the larger of
+its two by 6.00 points; here the generator term is the larger by 8.42. If that
+reversal held at five seeds it would say the decomposition depends not only on the
+detector but on which nuisance the intermediate set holds fixed. It does not hold
+at five seeds, so it is reported as an estimate and not as a finding. Resolving it
+would need more seeds at 256px, which is the one thing this track is expensive in.
+
+What the track does establish is that the operation is not specific to CIFAKE
+against ImageNet at 32x32. The same three-set construction separates two terms at
+eight times the resolution, on a different corpus, against a different held-out
+generator, and returns a resolution term of -9.59 with an interval of 1.07.
+
+ResNet-18 has one high-resolution checkpoint, so its row is a single run with no
+interval and is not compared against the seeded row.

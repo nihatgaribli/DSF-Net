@@ -1,29 +1,32 @@
-Undecided scores and confident errors, percentages of each set
+Undecided scores and confident errors, percentages, five seeds
 ==========================================================================
 undecided       score in [0.4, 0.6]
 confident error score above 0.9 on a photograph, or below 0.1 on a generated image
 
-detector       undecided A  worst OOD   conf.err A  worst OOD  where         
+Set A is the balanced in-distribution pair. The worst column is the worst of the
+8 out-of-distribution sets, chosen per seed and then averaged, so it is the
+worst a run actually saw rather than the worst of the averages.
+
+detector        undecided A     worst OOD    conf.err A     worst OOD
 --------------------------------------------------------------------------
-CIFAKE-CNN             4.7       15.6          0.3       12.4  ADM           
-DSF-Net                2.0       10.6          1.1       26.6  ImageNet real 
-ResNet-18              1.4        7.6          0.7       43.6  ADM           
-CLIP probe             2.9       11.8          0.8       31.5  ImageNet real 
+CIFAKE-CNN        4.5 +/-0.3     17.5 +/-1.7      0.4 +/-0.1     19.8 +/-1.9 
+DSF-Net           1.8 +/-0.2      9.4 +/-1.6      1.1 +/-0.2     37.1 +/-12.0
+ResNet-18         0.9 +/-0.5      7.7 +/-2.0      0.8 +/-0.1     49.6 +/-10.5
+CLIP probe        2.6 +/-0.2     11.0 +/-0.7      0.8 +/-0.1     32.4 +/-1.2 
 
-Markdown row form, for the manuscript table:
+Worst set per detector, by confident errors: CIFAKE-CNN on BigGAN, DSF-Net on ADM, ResNet-18 on BigGAN, CLIP probe on ImageNet real
 
-| CIFAKE-CNN | 4.7 | 15.6 | 0.3 | 12.4 |
-| DSF-Net | 2.0 | 10.6 | 1.1 | 26.6 |
-| ResNet-18 | 1.4 | 7.6 | 0.7 | 43.6 |
-| CLIP probe | 2.9 | 11.8 | 0.8 | 31.5 |
+Markdown rows for the manuscript table:
 
-In distribution: undecided 1.4 to 4.7 per cent, confident errors 0.3 to 1.1.
-Out of distribution: undecided rises only to 15.6 per cent at worst, while
-confident errors reach 43.6.
+| CIFAKE-CNN | 4.5 +/- 0.3 | 17.5 +/- 1.7 | 0.4 +/- 0.1 | 19.8 +/- 1.9 |
+| DSF-Net | 1.8 +/- 0.2 | 9.4 +/- 1.6 | 1.1 +/- 0.2 | 37.1 +/- 12.0 |
+| ResNet-18 | 0.9 +/- 0.5 | 7.7 +/- 2.0 | 0.8 +/- 0.1 | 49.6 +/- 10.5 |
+| CLIP probe | 2.6 +/- 0.2 | 11.0 +/- 0.7 | 0.8 +/- 0.1 | 32.4 +/- 1.2 |
 
-Confident errors multiply by 25x to 62x; the undecided
-band multiplies by only 3.4x to 5.6x.
+In distribution: undecided 0.9 to 4.5 per cent, confident errors 0.4 to 1.1.
+Out of distribution: undecided rises only to 17.5 at worst, while confident
+errors reach 49.6.
+Confident errors multiply by 35x to 63x; the undecided band by only 3.9x to 8.9x.
 
-Least confident when wrong: CIFAKE-CNN. Most: ResNet-18. The ordering does not follow
-capacity in the direction one would hope: the smallest detector degrades the most
-gracefully by this measure and the largest degrades the worst.
+Least confident when wrong: CIFAKE-CNN. Most: ResNet-18.
+Ordering by confident errors out of distribution: CIFAKE-CNN < CLIP probe < DSF-Net < ResNet-18.

@@ -86,6 +86,12 @@ def load_notebook_namespace(quick: bool) -> dict:
     comparable with the ones already in the report; a reimplemented training loop would be
     measuring a different thing.
     """
+    # The notebook's EDA cells call plt.show(). Under an interactive backend that blocks on a
+    # window nobody is there to close, and the loader hangs after writing its first figure
+    # with the process alive and idle. Force a non-interactive backend before any cell runs.
+    import matplotlib
+    matplotlib.use("Agg", force=True)
+
     cells = parse_cells(NOTEBOOK.read_text(encoding="utf-8"))
 
     module = types.ModuleType("nb_seed_sweep")

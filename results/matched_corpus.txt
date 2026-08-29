@@ -1,0 +1,29 @@
+The corpus term before and after matching on twelve summary statistics
+==========================================================================
+One-to-one nearest-neighbour matching on the propensity score fitted from the twelve
+statistics, caliper 0.2 standard deviations of its logit. Unmatched images are
+dropped rather than stretched.
+
+set   pair                          n before  n after  screen before  screen after
+--------------------------------------------------------------------------
+A     A_real vs A_fake                  1000      634         0.6730        0.4392
+B     imagenet_real vs gen_SD15          500      437         0.6180        0.4920
+
+Neither matched set screens above 0.4920, so a model reading only these
+twelve statistics can no longer tell the classes apart in either of them, and
+what remains of the corpus term is not something they can explain. One of the
+two screens below 0.5, which is a weak model generalising worse than guessing
+once the signal it had is gone, not a signal in the other direction.
+
+Corpus term, full sets against matched subsets, five seeds
+--------------------------------------------------------------------------
+  detector          full  95% half   matched  95% half   change
+  CIFAKE-CNN      -22.45      1.23    -25.00      1.93    -2.55
+  DSF-Net         -23.08      3.57    -24.54      3.11    -1.46
+  ResNet-18       -19.68      0.56    -22.24      1.66    -2.56
+  CLIP probe      -28.71      0.63    -27.20      0.76     1.51
+
+4 of 4 corpus terms remain resolved after matching (CIFAKE-CNN, DSF-Net, ResNet-18, CLIP probe).
+The term moves by -2.56 to +1.51 points. Section 5.2 bounds
+the trivially separable part at about five points, and matching removes whatever part
+of it the twelve statistics could have carried.
