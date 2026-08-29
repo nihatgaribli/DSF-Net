@@ -18,15 +18,27 @@ Usage:
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import numpy as np
 from matplotlib.patches import Patch
 
 ROOT = Path(__file__).resolve().parent.parent
+
+def figure_dir(name: str) -> Path:
+    """Where the figures go.
+
+    Defaults into results/, so the repository is self-contained and a clone regenerates its
+    own figures. Set DSF_FIGURE_OUT to send them somewhere else, which is what a build that
+    typesets these figures into a document does.
+    """
+    override = os.environ.get("DSF_FIGURE_OUT")
+    return Path(override) if override else ROOT / "results" / "figures" / name
+
 DATA = ROOT / "data" / "per_image_predictions.npz"
 SETS = ROOT / "data" / "crossgen_sets_32.npz"
-OUT = ROOT / "paper" / "paper2" / "figures"
+OUT = figure_dir("process")
 
 INK = "#1a1a1a"
 GREY = "#6b7280"

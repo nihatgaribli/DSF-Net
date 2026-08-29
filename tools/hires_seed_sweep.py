@@ -1,6 +1,6 @@
 """Repeat the 256px architecture comparison across seeds, so it can be written up.
 
-Section 9 of the report rests on one seed per variant, and this study it feeds argues that a
+The 256px section rests on one seed per variant, and the analysis it feeds argues that a
 single run reads as convincing and can still be wrong. Publishing a single-seed result in
 support of that argument would undercut it. This closes the gap.
 

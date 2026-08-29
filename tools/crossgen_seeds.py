@@ -3,7 +3,7 @@
 `tools/crossgen_32.py` established the decomposition on one run of each of two models. That is
 exactly the evidence standard the evidence-standard analysis argues cannot carry an architectural claim, so
 repeating the measurement under the standard that paper recommends is not optional here: a
-second paper that reported single-run decomposition numbers would be refuted by the first.
+decomposition reported from single runs would be refuted by that standard.
 
 The three sets are unchanged, since the design is what separates the two shifts:
 

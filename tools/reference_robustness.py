@@ -1,6 +1,6 @@
 """Does the decomposition depend on which family member is used as the reference?
 
-Set B holds the generator as nearly fixed as a change of corpus allows, and the paper
+Set B holds the generator as nearly fixed as a change of corpus allows, and this study
 instantiates it with SD 1.5, the direct successor of the training generator. That choice is
 principled, and it is still a choice. A reader entitled to ask what happens under a different
 one should not have to take it on trust.
@@ -21,7 +21,7 @@ verifies the identity rather than asserting it.
 Two things are checked separately, because they do not behave the same way:
 
   direction   which of the two terms is larger in magnitude, per detector. This is the
-              paper's claim, and it is what the sign of |corpus| - |generator| encodes.
+              central claim, and it is what the sign of |corpus| - |generator| encodes.
   resolution  whether the difference is individually resolved at five seeds, meaning its
               95 per cent interval excludes zero.
 
@@ -132,7 +132,7 @@ def main() -> None:
     emit(f"  direction  : {len(same_sign)} of {len(ORDER)} detectors keep the sign of the")
     emit("               difference, so which term dominates is a property of the detector and")
     emit("               not of the reference. The sign change across detectors, which is the")
-    emit("               paper's claim, is present under both references.")
+    emit("               central claim, is present under both references.")
     emit(f"  resolution : {len(kept)} of {len(ORDER)} stay individually resolved at five seeds "
          f"({', '.join(kept)}).")
     if lost:
@@ -186,7 +186,7 @@ def main() -> None:
     emit("points away, as Wukong is for the probe, is not.")
     emit()
     emit("Reported because we ran it. A robustness check that weakens a result belongs in the")
-    emit("paper exactly as much as one that confirms it.")
+    emit("record exactly as much as one that confirms it.")
 
     OUT.write_text(chr(10).join(lines) + chr(10), encoding="utf-8")
     print("")

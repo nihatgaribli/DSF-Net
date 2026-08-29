@@ -16,7 +16,7 @@ CLIP probe        2.6 +/-0.2     11.0 +/-0.7      0.8 +/-0.1     32.4 +/-1.2
 
 Worst set per detector, by confident errors: CIFAKE-CNN on BigGAN, DSF-Net on ADM, ResNet-18 on BigGAN, CLIP probe on ImageNet real
 
-Markdown rows for the manuscript table:
+Markdown rows for the results table:
 
 | CIFAKE-CNN | 4.5 +/- 0.3 | 17.5 +/- 1.7 | 0.4 +/- 0.1 | 19.8 +/- 1.9 |
 | DSF-Net | 1.8 +/- 0.2 | 9.4 +/- 1.6 | 1.1 +/- 0.2 | 37.1 +/- 12.0 |

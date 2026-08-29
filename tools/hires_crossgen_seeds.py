@@ -1,6 +1,6 @@
 """The decomposition at 256x256, over seeds, with resolution as the nuisance dimension.
 
-tools/hires_crossgen.py measures the same operation the decomposition analysis is built on, in a different
+tools/hires_crossgen.py measures the same operation this decomposition is built on, in a different
 place. Three balanced sets sharing the same photographs: A at 256px against generators the model
 trained on, B at 128px against the same generators, and C at 128px against BigGAN, which it
 never saw. B minus A is what the crop costs and C minus B is what the unseen generator costs.

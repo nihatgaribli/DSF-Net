@@ -22,13 +22,25 @@ Usage:
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
+
+def figure_dir(name: str) -> Path:
+    """Where the figures go.
+
+    Defaults into results/, so the repository is self-contained and a clone regenerates its
+    own figures. Set DSF_FIGURE_OUT to send them somewhere else, which is what a build that
+    typesets these figures into a document does.
+    """
+    override = os.environ.get("DSF_FIGURE_OUT")
+    return Path(override) if override else ROOT / "results" / "figures" / name
+
 RESULTS = ROOT / "results"
-OUT = ROOT / "paper" / "figures"
+OUT = figure_dir("evidence")
 
 BASELINE = "4. gated fusion (full)"
 REAL = "#1565c0"
@@ -48,7 +60,7 @@ def setup(plt):
 
 
 def log_spectrum(img_u8: np.ndarray) -> np.ndarray:
-    """Eq. 2 of the paper: centred log-magnitude spectrum of the greyscale image."""
+    """Eq. 2 of the write-up: centred log-magnitude spectrum of the greyscale image."""
     grey = img_u8.astype(np.float32) @ np.array([0.299, 0.587, 0.114], dtype=np.float32)
     return np.log1p(np.abs(np.fft.fftshift(np.fft.fft2(grey))))
 

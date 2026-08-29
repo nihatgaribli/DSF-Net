@@ -97,7 +97,7 @@ def main() -> None:
     emit("Worst set per detector, by confident errors: " +
          ", ".join(f"{m} on {where[m]}" for m in MODELS))
     emit()
-    emit("Markdown rows for the manuscript table:")
+    emit("Markdown rows for the results table:")
     emit()
     for m in MODELS:
         (uam, uah), (uom, uoh), (wam, wah), (wom, woh) = table[m]

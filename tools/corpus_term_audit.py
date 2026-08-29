@@ -12,7 +12,7 @@ signature at once. That much is true by construction.
 What survives resizing is coarse image statistics: mean and standard deviation per channel,
 overall brightness, contrast, saturation. If a classifier reading only those separates the
 classes in a set, then part of what this study calls a corpus term is a low-level statistical
-artefact of that pairing rather than a semantic difference, and this study should say so.
+artefact of that pairing rather than a semantic difference, and this analysis should say so.
 
 The screen is deliberately weak: logistic regression on twelve summary statistics, cross
 validated. A weak model is the right instrument, because the question is not whether the classes

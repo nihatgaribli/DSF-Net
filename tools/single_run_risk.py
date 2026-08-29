@@ -6,13 +6,13 @@ claim. This script turns the anecdote into a rate.
 
 The five-seed sweep left 35 trained models: seven variants at five seeds each. For any pair of
 variants there are 25 ways to pick one run of each, and each of those pairings is exactly the
-comparison a single-run paper would have published. Comparing the sign of each against the
+comparison a single-run report would have published. Comparing the sign of each against the
 paired five-seed verdict gives the probability that a single run reports the wrong direction.
 
 Two rates are reported because they answer different questions:
 
   **any-pairing** takes one run of A and one of B independently, which is what happens when
-  two numbers are compared across papers, or across a table assembled at different times.
+  two numbers are compared across reports, or across a table assembled at different times.
 
   **same-seed** compares the two runs that shared a seed, which is the best case: it is what a
   careful single-run study does, holding initialisation fixed across the comparison. If even
@@ -77,7 +77,7 @@ def main() -> None:
                      diff.std(ddof=1) / np.sqrt(len(shared)))
         resolved = not (mean - half < 0 < mean + half)
 
-        # Every way of picking one run of each: the comparison a single-run paper publishes.
+        # Every way of picking one run of each: the comparison a single-run report publishes.
         pairs = [(x, y) for x in sa.loc[shared] for y in sb.loc[shared]]
         any_wrong = np.mean([np.sign(x - y) != np.sign(mean) for x, y in pairs])
         same_wrong = np.mean([np.sign(sa[s] - sb[s]) != np.sign(mean) for s in shared])

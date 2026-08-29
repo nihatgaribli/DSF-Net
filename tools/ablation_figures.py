@@ -23,13 +23,25 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import os
 from pathlib import Path
 
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
+
+def figure_dir(name: str) -> Path:
+    """Where the figures go.
+
+    Defaults into results/, so the repository is self-contained and a clone regenerates its
+    own figures. Set DSF_FIGURE_OUT to send them somewhere else, which is what a build that
+    typesets these figures into a document does.
+    """
+    override = os.environ.get("DSF_FIGURE_OUT")
+    return Path(override) if override else ROOT / "results" / "figures" / name
+
 RESULTS = ROOT / "results"
-OUT_DIR = ROOT / "paper" / "figures"
+OUT_DIR = figure_dir("ablation")
 
 BASELINE = "4. gated fusion (full)"
 REAL = "#1565c0"

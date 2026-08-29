@@ -27,7 +27,7 @@ What survives the substitution
   direction  : 4 of 4 detectors keep the sign of the
                difference, so which term dominates is a property of the detector and
                not of the reference. The sign change across detectors, which is the
-               paper's claim, is present under both references.
+               central claim, is present under both references.
   resolution : 1 of 4 stay individually resolved at five seeds (CLIP probe).
                3 lose it: CIFAKE-CNN, DSF-Net, ResNet-18.
 
@@ -73,4 +73,4 @@ costs a point of the difference, which is inside the noise. A reference chosen f
 points away, as Wukong is for the probe, is not.
 
 Reported because we ran it. A robustness check that weakens a result belongs in the
-paper exactly as much as one that confirms it.
+record exactly as much as one that confirms it.
