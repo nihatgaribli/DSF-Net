@@ -1,4 +1,4 @@
-"""The four figures of the decomposition analysis, built from results/ rather than drawn by hand.
+"""The decomposition figures, built from results/ rather than drawn by hand.
 
   sets          what the three evaluation sets contain and which difference each isolates
   decomposition the signature image: corpus and generator terms for four detectors
@@ -9,7 +9,7 @@ Sources: results/crossgen_seeds.csv, results/clip_probe.csv, results/gate_fix.cs
 results/gate_original.csv.
 
 Usage:
-    python tools/paper2_figures.py
+    python tools/decomposition_figures.py
 """
 
 from __future__ import annotations

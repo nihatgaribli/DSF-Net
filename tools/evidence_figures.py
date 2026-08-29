@@ -1,4 +1,4 @@
-"""Build the manuscript's evidence figures from the data and the recorded results.
+"""Build the evidence figures from the data and the recorded results.
 
 This study defines the log-magnitude spectrum in Eq. 2 and the radial profile in Eq. 3, reports
 seed spreads in a table and paired intervals in another, and until now showed a reader none of
@@ -17,7 +17,7 @@ Three figures, each computed here rather than drawn:
 Sources: data/cifake_cache.npz, results/seeds.csv, results/arch_seeds.csv.
 
 Usage:
-    python tools/manuscript_figures.py
+    python tools/evidence_figures.py
 """
 
 from __future__ import annotations
