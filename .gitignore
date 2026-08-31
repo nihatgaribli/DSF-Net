@@ -62,3 +62,10 @@ tools/form_fields.py
 tools/graphical_abstract.py
 tools/graphical_abstract2.py
 tools/overlap_check.py
+
+# History bundles. These hold the repository as it was before the write-ups, the coursework
+# and the reviewer suggestions were removed from it, so committing one would undo that in a
+# single stroke. Both spellings are ignored because the folder has been created under each.
+__backups/
+___backups/
+*.bundle
