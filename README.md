@@ -84,7 +84,7 @@ Test set, 20,000 images, positive class = FAKE. From [`results/metrics.csv`](res
 | ResNet-18 (fine-tuned) | **0.9781** | **0.9964** | 0.0458 | 11,169,345 | 9,393 |
 
 DSF-Net beats the **published CIFAKE reference (92.98%) by 2.73 points** with 13.2x fewer parameters
-and 2.3x the throughput of ResNet-18, and is the best-calibrated model tested. **It loses to
+and 2.3x the throughput of ResNet-18, and is the best-calibrated neural model tested (ECE 0.039; the 17-parameter spectral baseline is better still at 0.034). **It loses to
 ResNet-18 by 2.10 points**, which the report states plainly rather than working around.
 
 ![Accuracy versus parameter count and throughput](results/figures/07_accuracy_vs_cost.png)
